@@ -110,7 +110,7 @@
             gap: 15px;
         }
 
-        .auth-form input, .auth-form select, .admin-action-box input, .admin-action-box select, .modal-body input, .modal-body textarea, .search-bar-wrapper input, .finder-wrapper input {
+        .auth-form input, .auth-form select, .admin-action-box input, .admin-action-box select, .modal-body input, .modal-body textarea, .search-bar-wrapper input {
             padding: 12px;
             border-radius: 6px;
             border: 1px solid var(--border-color);
@@ -121,12 +121,12 @@
             transition: border-color 0.2s;
         }
 
-        .auth-form input:focus, .admin-action-box input:focus, .modal-body textarea:focus, .search-bar-wrapper input:focus, .finder-wrapper input:focus {
+        .auth-form input:focus, .admin-action-box input:focus, .modal-body textarea:focus, .search-bar-wrapper input:focus {
             outline: none;
             border-color: var(--accent-color);
         }
 
-        .auth-form button, .admin-btn, .play-button-large, .finder-btn {
+        .auth-form button, .admin-btn, .play-button-large, .action-choice-btn {
             background-color: var(--accent-color);
             color: white;
             border: none;
@@ -137,10 +137,10 @@
             cursor: pointer;
             transition: background 0.2s, transform 0.1s;
         }
-        .auth-form button:hover, .play-button-large:hover, .finder-btn:hover {
+        .auth-form button:hover, .play-button-large:hover, .action-choice-btn:hover {
             background-color: var(--accent-hover);
         }
-        .auth-form button:active, .play-button-large:active, .finder-btn:active {
+        .auth-form button:active, .play-button-large:active, .action-choice-btn:active {
             transform: scale(0.98);
         }
 
@@ -162,6 +162,7 @@
             align-items: center;
             border-bottom: 1px solid var(--border-color);
             gap: 20px;
+            position: relative;
         }
 
         .logo {
@@ -175,6 +176,7 @@
             flex-shrink: 0;
         }
 
+        /* LIVE DROPDOWN SEARCH ARCHITECTURE */
         .search-bar-wrapper {
             flex: 1;
             max-width: 450px;
@@ -184,6 +186,38 @@
             padding: 10px 15px;
             font-size: 13px;
             border-radius: 20px;
+        }
+        .search-suggestions-box {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: var(--panel-color);
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            z-index: 99;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        .suggestion-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            font-size: 13px;
+            transition: background 0.2s;
+            text-align: left;
+        }
+        .suggestion-item:hover {
+            background-color: #261503;
+        }
+        .suggestion-category {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-bottom: 2px;
         }
 
         .header-controls {
@@ -251,30 +285,13 @@
             box-shadow: 0 4px 16px rgba(0,0,0,0.2);
         }
 
-        /* ACCOUNT FINDER INTERFACE STYLES */
-        .finder-wrapper {
+        /* EXPLORER OUTPUT MODULE STYLE */
+        .explorer-output-block {
             background-color: var(--panel-color);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 25px;
-        }
-        .finder-input-group {
-            display: flex;
-            gap: 10px;
-        }
-        .finder-btn {
-            padding: 0 20px;
-            font-size: 14px;
-            border-radius: 6px;
-            flex-shrink: 0;
-        }
-        .finder-results-box {
-            margin-top: 15px;
-            background: rgba(0,0,0,0.2);
-            border: 1px dashed var(--border-color);
-            border-radius: 6px;
-            padding: 15px;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
         }
 
         h2, h3 {
@@ -497,6 +514,15 @@
             margin-top: 15px;
         }
 
+        .action-choice-btn {
+            padding: 12px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
         .punish-text {
             text-align: left;
             margin: 20px 0;
@@ -548,6 +574,18 @@
                 <span id="p-note" style="color: #ff941a; font-style: italic;">-</span>
             </div>
             <button class="admin-btn" style="width: 100%;" onclick="executeLogout()">Return to Login Gateway</button>
+        </div>
+    </div>
+
+    <div id="search-routing-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="text-align:center;">
+            <h3 style="border:none; margin-bottom:5px;">Select Search Engine</h3>
+            <p style="font-size:12px; color:#888; margin-bottom:20px;">Choose whether to scan user records or game modules for: "<span id="modal-routing-query-text" style="color:#fff; font-weight:600;"></span>"</p>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                <button class="action-choice-btn" onclick="triggerRoutedSearch('game')">🎮 Search Game Registry</button>
+                <button class="action-choice-btn" style="background-color:#3498db;" onclick="triggerRoutedSearch('user')">👤 Search User Profiles</button>
+                <button class="admin-btn" style="background:#222; margin-top:5px;" onclick="closeRoutingModal()">Cancel</button>
+            </div>
         </div>
     </div>
 
@@ -606,7 +644,11 @@
             </div>
             
             <div class="search-bar-wrapper">
-                <input type="text" id="global-search-input" placeholder="Search games by keywords or letters..." oninput="executeGlobalSearch(this.value)">
+                <input type="text" id="global-search-input" placeholder="Search parameters... (Press Enter)" 
+                       oninput="handleSearchTyping(this.value)" 
+                       onkeydown="handleSearchKeyDown(event, this.value)"
+                       onblur="handleSearchBlur()">
+                <div id="search-suggestions" class="search-suggestions-box hidden"></div>
             </div>
 
             <div class="header-controls">
@@ -617,18 +659,18 @@
         <div class="container">
             
             <div id="view-home">
+                
+                <div id="explorer-output-section" class="explorer-output-block hidden">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid var(--border-color); padding-bottom:8px;">
+                        <h3 id="explorer-title" style="border:none; margin:0; font-size:18px;">🔍 Explorer Results</h3>
+                        <button class="admin-btn" style="background:#444;" onclick="clearExplorerOutputSection()">Clear Results</button>
+                    </div>
+                    <div id="explorer-data-dump"></div>
+                </div>
+
                 <div class="greeting-header">
                     <span id="welcome-banner">Good Day, User</span>
                     <img id="home-admin-badge" class="admin-badge hidden" src="https://cdn.discordapp.com/attachments/1503068697118511116/1517227632217821306/zmtv7bh.png?ex=6a3583d8&is=6a343258&hm=99c84b06a62d4e439ea269f3917054326c6c70d0e2fd166bfb9be2a8bc0d4d54&" alt="Admin">
-                </div>
-
-                <div class="finder-wrapper">
-                    <div class="section-title" style="font-size:16px; margin-bottom:10px;">🔍 Profile & Account Finder</div>
-                    <div class="finder-input-group">
-                        <input type="text" id="finder-search-input" placeholder="Enter full username token to look up profile statistics...">
-                        <button class="finder-btn" onclick="searchProfileAccount()">Find Account</button>
-                    </div>
-                    <div id="finder-results" class="finder-results-box hidden"></div>
                 </div>
                 
                 <div class="section-block">
@@ -650,7 +692,6 @@
                             <div class="game-strip-title">Murder Mystery 2</div>
                         </div>
                     </div>
-                    <p id="search-empty-feedback" class="hidden" style="color:#666; font-size:14px; padding:15px 5px;">No structural game profiles match your search characters.</p>
                 </div>
             </div>
 
@@ -823,14 +864,7 @@
         let scene, camera, renderer, characterGroup;
         let headMesh, torsoMesh, leftArm, rightArm, leftLeg, rightLeg;
 
-        let sessionData = {
-            username: "",
-            uid: "",
-            dob: "Not Registered",
-            gender: "Unspecified",
-            theme: "orange",
-            role: "Player"
-        };
+        let sessionData = { username: "", uid: "", dob: "Not Registered", gender: "Unspecified", theme: "orange", role: "Player" };
 
         let userRegistry = JSON.parse(localStorage.getItem('meow_user_registry')) || {
             "MeowBlox": { username: "MeowBlox", uid: "MB:001", password: "123", dob: "2026-01-01", gender: "Other", role: "Owner" }
@@ -843,6 +877,7 @@
         };
 
         let activeModalType = "";
+        let currentSearchQuery = "";
 
         window.addEventListener('DOMContentLoaded', () => {
             saveRegistry();
@@ -859,86 +894,155 @@
             if (!name) return null;
             const search = name.toLowerCase();
             for (let key in userRegistry) {
-                if (key.toLowerCase() === search) {
-                    return userRegistry[key];
-                }
+                if (key.toLowerCase() === search) return userRegistry[key];
             }
             return null;
         }
 
         function generateCustomUID() {
             let nextIndex = Object.keys(userRegistry).length + 1;
-            if (nextIndex <= 999) {
-                return "MB:" + String(nextIndex).padStart(3, '0');
-            } else {
-                return "MB:" + nextIndex;
-            }
+            return "MB:" + String(nextIndex).padStart(3, '0');
         }
 
-        // GLOBAL HEADER GAME SEARCH SYSTEM
-        function executeGlobalSearch(val) {
+        // --- NEW SEARCH ARCHITECTURE LOGIC CORE ---
+
+        function handleSearchTyping(val) {
             const query = val.toLowerCase().trim();
-            const cards = document.querySelectorAll('#games-scroller-box .game-strip-card');
-            let visibleCount = 0;
-
-            cards.forEach(card => {
-                const gameKey = card.getAttribute('data-gamekey');
-                const gameData = gameDatabase[gameKey];
-                
-                if (gameData && gameData.title.toLowerCase().includes(query)) {
-                    card.classList.remove('hidden');
-                    visibleCount++;
-                } else {
-                    card.classList.add('hidden');
-                }
-            });
-
-            const emptyNotice = document.getElementById('search-empty-feedback');
-            if (visibleCount === 0) {
-                emptyNotice.classList.remove('hidden');
-            } else {
-                emptyNotice.classList.add('hidden');
-            }
-        }
-
-        // ACCOUNT FINDER SEARCH ENGINE
-        function searchProfileAccount() {
-            const inputVal = document.getElementById('finder-search-input').value.trim();
-            const resultsBox = document.getElementById('finder-results');
+            const container = document.getElementById('search-suggestions');
             
-            if (!inputVal) {
-                resultsBox.classList.add('hidden');
+            if(!query) {
+                container.classList.add('hidden');
                 return;
             }
 
-            const targetUser = locateUserObject(inputVal);
-            resultsBox.classList.remove('hidden');
+            let matchesHTML = "";
+            let matchCount = 0;
 
-            if (!targetUser) {
-                resultsBox.innerHTML = `<p style="color: #e74c3c; font-size:13px; font-weight:600;">No accounts found with the username parameter "${inputVal}".</p>`;
-                return;
-            }
-
-            // Sync standing enforcement values contextually
-            let standingPunishment = "None Record Active";
-            for (let key in activePunishments) {
-                if (key.toLowerCase() === targetUser.username.toLowerCase()) {
-                    standingPunishment = activePunishments[key].type.toUpperCase();
-                    break;
+            // 1. Scan for matching game titles
+            for (let key in gameDatabase) {
+                if(gameDatabase[key].title.toLowerCase().includes(query)) {
+                    matchesHTML += `
+                        <div class="suggestion-item" onmousedown="openGamePage('${key}')">
+                            <div class="suggestion-category">Game Instance</div>
+                            <strong>${gameDatabase[key].title}</strong>
+                        </div>`;
+                    matchCount++;
                 }
             }
 
-            resultsBox.innerHTML = `
-                <div style="font-size: 13px; line-height: 1.6;">
-                    <div style="margin-bottom:6px;"><strong style="color:var(--accent-color);">Matched Username:</strong> ${targetUser.username}</div>
-                    <div style="margin-bottom:6px;"><strong>Structural User ID:</strong> <span style="font-family:monospace; background:#000; padding:2px 6px; border-radius:3px; color:#2ecc71;">${targetUser.uid}</span></div>
-                    <div style="margin-bottom:6px;"><strong>Privilege Clearance:</strong> ${targetUser.role}</div>
-                    <div style="margin-bottom:6px;"><strong>Birthdate Node:</strong> ${targetUser.dob}</div>
-                    <div style="margin-bottom:6px;"><strong>Gender Property:</strong> ${targetUser.gender || 'Unspecified'}</div>
-                    <div><strong>Enforcement Index:</strong> <span style="color:${standingPunishment === 'None Record Active' ? '#2ecc71' : '#e74c3c'}; font-weight:bold;">${standingPunishment}</span></div>
-                </div>
-            `;
+            // 2. Scan for matching account users
+            for (let name in userRegistry) {
+                if(name.toLowerCase().includes(query)) {
+                    matchesHTML += `
+                        <div class="suggestion-item" onmousedown="executeQuickUserDisplay('${userRegistry[name].username}')">
+                            <div class="suggestion-category">User Account</div>
+                            <strong>${userRegistry[name].username}</strong> (${userRegistry[name].uid})
+                        </div>`;
+                    matchCount++;
+                }
+            }
+
+            if(matchCount > 0) {
+                container.innerHTML = matchesHTML;
+                container.classList.remove('hidden');
+            } else {
+                container.innerHTML = `<div class="suggestion-item" style="color:#777; cursor:default;">No immediate matches found.</div>`;
+                container.classList.remove('hidden');
+            }
         }
+
+        function handleSearchBlur() {
+            // Slight delay lets mouse events resolve inside dropdown before closing
+            setTimeout(() => {
+                document.getElementById('search-suggestions').classList.add('hidden');
+            }, 180);
+        }
+
+        function handleSearchKeyDown(event, val) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const query = val.trim();
+                if (!query) return;
+
+                currentSearchQuery = query;
+                document.getElementById('modal-routing-query-text').textContent = query;
+                document.getElementById('search-suggestions').classList.add('hidden');
+                document.getElementById('search-routing-modal').classList.remove('hidden');
+            }
+        }
+
+        function closeRoutingModal() {
+            document.getElementById('search-routing-modal').classList.add('hidden');
+        }
+
+        function triggerRoutedSearch(engineType) {
+            closeRoutingModal();
+            navigateTo('home');
+
+            const outBlock = document.getElementById('explorer-output-section');
+            const dataDump = document.getElementById('explorer-data-dump');
+            outBlock.classList.remove('hidden');
+
+            if(engineType === 'game') {
+                document.getElementById('explorer-title').textContent = `🎮 Game Explorer: "${currentSearchQuery}"`;
+                let foundGame = null;
+                
+                for(let key in gameDatabase) {
+                    if(gameDatabase[key].title.toLowerCase().includes(currentSearchQuery.toLowerCase())) {
+                        foundGame = key;
+                        break;
+                    }
+                }
+
+                if(foundGame) {
+                    const g = gameDatabase[foundGame];
+                    dataDump.innerHTML = `
+                        <div style="background:rgba(255,255,255,0.03); pading:15px; border-radius:6px; border:1px solid var(--border-color); padding:15px;">
+                            <h4 style="color:var(--accent-color); margin-bottom:5px; font-size:16px;">${g.title}</h4>
+                            <p style="font-size:13px; color:#ccc; margin-bottom:12px;">${g.desc}</p>
+                            <button class="admin-btn success" onclick="openGamePage('${foundGame}')">Go to Game Profile Page</button>
+                        </div>`;
+                } else {
+                    dataDump.innerHTML = `<p style="color:#e74c3c; font-size:13px;">No structural game modules found matching your query parameters.</p>`;
+                }
+            } else {
+                document.getElementById('explorer-title').textContent = `👤 User Explorer: "${currentSearchQuery}"`;
+                const matchedUser = locateUserObject(currentSearchQuery);
+
+                if(matchedUser) {
+                    let enforcement = "None Active";
+                    for (let key in activePunishments) {
+                        if (key.toLowerCase() === matchedUser.username.toLowerCase()) {
+                            enforcement = activePunishments[key].type.toUpperCase();
+                            break;
+                        }
+                    }
+
+                    dataDump.innerHTML = `
+                        <div style="font-size: 13px; line-height: 1.6; background:rgba(0,0,0,0.2); border:1px dashed var(--border-color); padding:15px; border-radius:6px;">
+                            <div><strong style="color:var(--accent-color);">Account Name:</strong> ${matchedUser.username}</div>
+                            <div><strong>Custom User ID:</strong> <span style="font-family:monospace; color:#2ecc71;">${matchedUser.uid}</span></div>
+                            <div><strong>Clearance Level:</strong> ${matchedUser.role}</div>
+                            <div><strong>DOB Parameters:</strong> ${matchedUser.dob}</div>
+                            <div><strong>Enforcement Record:</strong> <span style="color:${enforcement === 'None Active' ? '#2ecc71' : '#e74c3c'}; font-weight:bold;">${enforcement}</span></div>
+                        </div>`;
+                } else {
+                    dataDump.innerHTML = `<p style="color:#e74c3c; font-size:13px;">No registered account objects found matching profile moniker.</p>`;
+                }
+            }
+        }
+
+        function executeQuickUserDisplay(username) {
+            currentSearchQuery = username;
+            triggerRoutedSearch('user');
+        }
+
+        function clearExplorerOutputSection() {
+            document.getElementById('explorer-output-section').classList.add('hidden');
+            document.getElementById('global-search-input').value = "";
+        }
+
+        // --- END SEARCH LOGIC CORE ---
 
         function switchAuthTab(targetTab) {
             const loginForm = document.getElementById('form-login');
@@ -961,7 +1065,6 @@
 
         function executeAuth(event, type) {
             event.preventDefault();
-            
             if (type === 'signup') {
                 const user = document.getElementById('signup-user').value.trim();
                 const pass = document.getElementById('signup-pass').value;
@@ -969,7 +1072,7 @@
                 const gender = document.getElementById('signup-gender').value || "Unspecified";
 
                 if (locateUserObject(user)) {
-                    alert("This profile moniker is already cataloged in the registry.");
+                    alert("This profile moniker is already cataloged.");
                     return;
                 }
 
@@ -978,7 +1081,6 @@
 
                 userRegistry[user] = { username: user, uid: newUid, password: pass, dob: dob, gender: gender, role: assignedRole };
                 saveRegistry();
-
                 sessionData = { username: user, uid: newUid, dob: dob, gender: gender, theme: "orange", role: assignedRole };
             } else {
                 const user = document.getElementById('login-user').value.trim();
@@ -986,15 +1088,13 @@
 
                 const matchedAccount = locateUserObject(user);
                 if (!matchedAccount || matchedAccount.password !== pass) {
-                    alert("Credentials verification failure returned.");
+                    alert("Credentials verification failure.");
                     return;
                 }
-
                 sessionData = { username: matchedAccount.username, uid: matchedAccount.uid, dob: matchedAccount.dob, gender: matchedAccount.gender, theme: "orange", role: matchedAccount.role };
             }
 
             if (checkPunishmentStatus(sessionData.username)) return;
-
             saveSessionToStorage();
             initiateUserSession();
         }
@@ -1012,16 +1112,12 @@
             }
             if (!punishment) return false;
 
-            if (punishment.type === 'ban') {
-                if (new Date().getTime() > punishment.expires) {
-                    for (let key in activePunishments) {
-                        if (key.toLowerCase() === username.toLowerCase()) {
-                            delete activePunishments[key];
-                        }
-                    }
-                    saveRegistry();
-                    return false;
+            if (punishment.type === 'ban' && new Date().getTime() > punishment.expires) {
+                for (let key in activePunishments) {
+                    if (key.toLowerCase() === username.toLowerCase()) delete activePunishments[key];
                 }
+                saveRegistry();
+                return false;
             }
 
             document.getElementById('auth-gateway').classList.add('hidden');
@@ -1040,9 +1136,7 @@
             if (stored) {
                 sessionData = JSON.parse(stored);
                 const currentRecord = locateUserObject(sessionData.username);
-                if(currentRecord) {
-                    sessionData.role = currentRecord.role;
-                }
+                if(currentRecord) sessionData.role = currentRecord.role;
                 if (checkPunishmentStatus(sessionData.username)) return;
                 initiateUserSession();
             } else {
@@ -1064,7 +1158,6 @@
             
             document.getElementById('settings-username-input').value = sessionData.username;
             document.getElementById('settings-theme-select').value = sessionData.theme;
-
             navigateTo('home');
         }
 
@@ -1076,13 +1169,8 @@
             else greet = "Good Evening";
 
             document.getElementById('welcome-banner').textContent = `${greet}, ${sessionData.username}`;
-            
             const badge = document.getElementById('home-admin-badge');
-            if (sessionData.role !== 'Player') {
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
+            badge.classList.toggle('hidden', sessionData.role === 'Player');
         }
 
         function setupAdminControlVisibility() {
@@ -1094,12 +1182,10 @@
                 panel.classList.add('hidden');
                 return;
             }
-
             panel.classList.remove('hidden');
 
             document.getElementById('abtn-mod').classList.toggle('hidden', role !== 'Owner');
             document.getElementById('abtn-admin').classList.toggle('hidden', role !== 'Owner');
-            
             document.getElementById('abtn-warn').classList.toggle('hidden', !['Owner', 'Head Admin', 'Administrator', 'Moderator'].includes(role));
             document.getElementById('abtn-ban').classList.toggle('hidden', !['Owner', 'Head Admin', 'Administrator', 'Moderator'].includes(role));
             document.getElementById('abtn-term').classList.toggle('hidden', !['Owner', 'Head Admin', 'Administrator'].includes(role));
@@ -1108,26 +1194,20 @@
                 advancedBox.classList.remove('hidden');
                 document.getElementById('abtn-unban').classList.remove('hidden');
                 document.getElementById('abtn-wipe').classList.remove('hidden');
-            } else {
-                advancedBox.classList.add('hidden');
-            }
+            } else { advancedBox.classList.add('hidden'); }
         }
 
         function triggerImmediateAction(actionType) {
             const inputVal = document.getElementById('admin-target-user').value.trim();
             const matchedAccount = locateUserObject(inputVal);
-            
-            if (!matchedAccount) {
-                alert("Target profile identification invalid.");
-                return;
-            }
+            if (!matchedAccount) { alert("Target profile identification invalid."); return; }
 
             if (actionType === 'give-mod') {
                 userRegistry[matchedAccount.username].role = "Moderator";
-                alert(`Moderation privileges assigned to user context: ${matchedAccount.username}`);
+                alert(`Moderation privileges assigned: ${matchedAccount.username}`);
             } else if (actionType === 'give-admin') {
                 userRegistry[matchedAccount.username].role = "Administrator";
-                alert(`Administrative layer clearance assigned to user context: ${matchedAccount.username}`);
+                alert(`Administrative clearance assigned: ${matchedAccount.username}`);
             }
             saveRegistry();
         }
@@ -1136,25 +1216,14 @@
             const inputVal = document.getElementById('admin-target-user').value.trim();
             const matchedAccount = locateUserObject(inputVal);
             
-            if (!matchedAccount) {
-                alert("Specify a clear cataloged profile target identity first.");
-                return;
-            }
-            if (matchedAccount.role === 'Owner') {
-                alert("Action rejected: Structural administrative entity is immune.");
-                return;
-            }
+            if (!matchedAccount) { alert("Specify a target signature entry."); return; }
+            if (matchedAccount.role === 'Owner') { alert("Action rejected: Entity is immune."); return; }
 
             activeModalType = type;
             document.getElementById('admin-modal').classList.remove('hidden');
-            document.getElementById('modal-title').textContent = type.toUpperCase() + " Profile Node Enforcement";
-            document.getElementById('modal-desc').textContent = `Applying security processing flags to structural account data for: ${matchedAccount.username}`;
-            
-            if (type === 'ban') {
-                document.getElementById('modal-ban-length-box').classList.remove('hidden');
-            } else {
-                document.getElementById('modal-ban-length-box').classList.add('hidden');
-            }
+            document.getElementById('modal-title').textContent = type.toUpperCase() + " Node Enforcement";
+            document.getElementById('modal-desc').textContent = `Enforcing parameters on: ${matchedAccount.username}`;
+            document.getElementById('modal-ban-length-box').classList.toggle('hidden', type !== 'ban');
         }
 
         function closeAdminModal() {
@@ -1168,39 +1237,23 @@
             const matchedAccount = locateUserObject(inputVal);
             if (!matchedAccount) return;
 
-            const reason = document.getElementById('modal-reason').value.trim() || "Unspecified Code Infraction";
-            const note = document.getElementById('modal-note').value.trim() || "No modification context logs appended.";
+            const reason = document.getElementById('modal-reason').value.trim() || "Violation Infraction";
+            const note = document.getElementById('modal-note').value.trim() || "No log notes appended.";
             const targetKey = matchedAccount.username;
 
             if (activeModalType === 'warn') {
-                alert(`Security alert notice successfully transmitted onto profile data stream: ${targetKey}`);
+                alert(`Security alert transmitted: ${targetKey}`);
             } else if (activeModalType === 'ban') {
                 let days = parseInt(document.getElementById('modal-ban-days').value) || 1;
-                
-                if (sessionData.role === 'Moderator' && days > 3) {
-                    days = 3;
-                    alert("Enforcement notice truncated: Modifier operational parameters ceiling capped at 3 days maximum.");
-                }
+                if (sessionData.role === 'Moderator' && days > 3) days = 3;
 
                 const expirationEpoch = new Date().getTime() + (days * 24 * 60 * 60 * 1000);
-                activePunishments[targetKey] = {
-                    type: "ban",
-                    timestamp: new Date().toLocaleString(),
-                    reason: reason,
-                    note: note,
-                    expires: expirationEpoch
-                };
-                alert(`Access containment algorithm executed against user context ${targetKey} for ${days} days.`);
+                activePunishments[targetKey] = { type: "ban", timestamp: new Date().toLocaleString(), reason: reason, note: note, expires: expirationEpoch };
+                alert(`Profile containment initialized for ${days} days.`);
             } else if (activeModalType === 'terminate') {
-                activePunishments[targetKey] = {
-                    type: "termination",
-                    timestamp: new Date().toLocaleString(),
-                    reason: reason,
-                    note: note
-                };
-                alert(`Profile data framework permanently segregated for account context ID ${targetKey}.`);
+                activePunishments[targetKey] = { type: "termination", timestamp: new Date().toLocaleString(), reason: reason, note: note };
+                alert(`Profile data permanently segregated.`);
             }
-
             saveRegistry();
             closeAdminModal();
         }
@@ -1211,60 +1264,34 @@
 
             let resolvedUsername = null;
             for (let name in userRegistry) {
-                if (userRegistry[name].uid.toUpperCase() === targetUid) {
-                    resolvedUsername = userRegistry[name].username;
-                    break;
-                }
+                if (userRegistry[name].uid.toUpperCase() === targetUid) { resolvedUsername = userRegistry[name].username; break; }
             }
-
-            if (!resolvedUsername) {
-                alert("No structural user identification tag profiles contain that token metric key.");
-                return;
-            }
+            if (!resolvedUsername) { alert("No identity tags match that metric token."); return; }
 
             if (actionType === 'unban') {
                 let foundKey = null;
                 for (let k in activePunishments) {
-                    if (k.toLowerCase() === resolvedUsername.toLowerCase()) {
-                        foundKey = k;
-                        break;
-                    }
+                    if (k.toLowerCase() === resolvedUsername.toLowerCase()) { foundKey = k; break; }
                 }
                 if (foundKey) {
                     delete activePunishments[foundKey];
-                    alert(`Access embargo successfully purged from structural token parameters for profile: ${resolvedUsername}`);
-                } else {
-                    alert("The identified structural profile contains no standing containments.");
-                }
-            } else if (actionType === 'wipe') {
-                alert(`Warning logs stack cleared to 0 values metric node for: ${resolvedUsername}`);
-            }
+                    alert(`Access embargo purged for: ${resolvedUsername}`);
+                } else { alert("Profile has no containment parameters."); }
+            } else if (actionType === 'wipe') { alert(`Warning counts zeroed for: ${resolvedUsername}`); }
             saveRegistry();
         }
 
         function applyThemeStyles(themeName) {
             const root = document.documentElement;
             if (themeName === 'orange') {
-                root.style.setProperty('--bg-color', '#0d0600');
-                root.style.setProperty('--panel-color', '#1a0e02');
-                root.style.setProperty('--border-color', '#2e1803');
-                root.style.setProperty('--input-bg', '#0d0600');
-                root.style.setProperty('--accent-color', '#ff941a');
-                root.style.setProperty('--accent-hover', '#e07b0d');
+                root.style.setProperty('--bg-color', '#0d0600'); root.style.setProperty('--panel-color', '#1a0e02'); root.style.setProperty('--border-color', '#2e1803');
+                root.style.setProperty('--accent-color', '#ff941a'); root.style.setProperty('--accent-hover', '#e07b0d');
             } else if (themeName === 'black') {
-                root.style.setProperty('--bg-color', '#000000');
-                root.style.setProperty('--panel-color', '#111111');
-                root.style.setProperty('--border-color', '#222222');
-                root.style.setProperty('--input-bg', '#000000');
-                root.style.setProperty('--accent-color', '#ff941a');
-                root.style.setProperty('--accent-hover', '#e07b0d');
+                root.style.setProperty('--bg-color', '#000000'); root.style.setProperty('--panel-color', '#111111'); root.style.setProperty('--border-color', '#222222');
+                root.style.setProperty('--accent-color', '#ff941a'); root.style.setProperty('--accent-hover', '#e07b0d');
             } else if (themeName === 'grey') {
-                root.style.setProperty('--bg-color', '#1c1c1c');
-                root.style.setProperty('--panel-color', '#2d2d2d');
-                root.style.setProperty('--border-color', '#3a3a3a');
-                root.style.setProperty('--input-bg', '#1c1c1c');
-                root.style.setProperty('--accent-color', '#ff941a');
-                root.style.setProperty('--accent-hover', '#e07b0d');
+                root.style.setProperty('--bg-color', '#1c1c1c'); root.style.setProperty('--panel-color', '#2d2d2d'); root.style.setProperty('--border-color', '#3a3a3a');
+                root.style.setProperty('--accent-color', '#ff941a'); root.style.setProperty('--accent-hover', '#e07b0d');
             }
         }
 
@@ -1273,24 +1300,14 @@
             const nextTheme = document.getElementById('settings-theme-select').value;
 
             if(nextUser && nextUser.toLowerCase() !== sessionData.username.toLowerCase()) {
-                if(locateUserObject(nextUser)) {
-                    alert("Moniker collision encountered.");
-                    return;
-                }
+                if(locateUserObject(nextUser)) { alert("Collision encountered."); return; }
                 let oldData = userRegistry[sessionData.username];
                 delete userRegistry[sessionData.username];
-                oldData.username = nextUser;
-                userRegistry[nextUser] = oldData;
-                sessionData.username = nextUser;
+                oldData.username = nextUser; userRegistry[nextUser] = oldData; sessionData.username = nextUser;
             }
             sessionData.theme = nextTheme;
-
-            saveRegistry();
-            saveSessionToStorage();
-            applyThemeStyles(sessionData.theme);
-            updateGreetingBanner();
-            alert("Settings matrix parameters committed successfully.");
-            navigateTo('menu');
+            saveRegistry(); saveSessionToStorage(); applyThemeStyles(sessionData.theme); updateGreetingBanner();
+            alert("Settings committed successfully."); navigateTo('menu');
         }
 
         function openGamePage(gameKey) {
@@ -1306,16 +1323,14 @@
             document.getElementById('game-page-visits').textContent = Number(visits).toLocaleString();
             
             const thumb = document.getElementById('game-page-thumb');
-            thumb.textContent = data.title;
-            thumb.style.background = data.style;
+            thumb.textContent = data.title; thumb.style.background = data.style;
 
             document.getElementById('game-page-play-btn').onclick = () => {
                 let currentVisits = parseInt(localStorage.getItem('meow_visits_' + gameKey) || 0);
                 localStorage.setItem('meow_visits_' + gameKey, currentVisits + 1);
                 localStorage.setItem('meow_ccu_' + gameKey, 1);
-                alert(`Launching instance connection pipeline for: ${data.title}`);
+                alert(`Launching connectivity pipeline to instance...`);
             };
-
             navigateTo('game-details');
         }
 
@@ -1327,22 +1342,15 @@
             document.getElementById('view-account-info').classList.add('hidden');
             document.getElementById('view-game-details').classList.add('hidden');
 
-            if (targetView === 'home') {
-                document.getElementById('view-home').classList.remove('hidden');
-            } else if (targetView === 'menu') {
-                document.getElementById('view-menu').classList.remove('hidden');
-            } else if (targetView === 'game-details') {
-                document.getElementById('view-game-details').classList.remove('hidden');
-            } else if (targetView === 'avatar') {
+            if (targetView === 'home') document.getElementById('view-home').classList.remove('hidden');
+            else if (targetView === 'menu') document.getElementById('view-menu').classList.remove('hidden');
+            else if (targetView === 'game-details') document.getElementById('view-game-details').classList.remove('hidden');
+            else if (targetView === 'avatar') {
                 document.getElementById('view-avatar').classList.remove('hidden');
-                setTimeout(() => {
-                    const container = document.getElementById('canvas-3d-container');
-                    if(container && renderer) renderer.setSize(container.clientWidth, container.clientHeight);
-                }, 50);
-            } else if (targetView === 'settings') {
-                document.getElementById('view-settings').classList.remove('hidden');
-                setupAdminControlVisibility();
-            } else if (targetView === 'account-info') {
+                setTimeout(() => { if(renderer) renderer.setSize(document.getElementById('canvas-3d-container').clientWidth, document.getElementById('canvas-3d-container').clientHeight); }, 50);
+            }
+            else if (targetView === 'settings') { document.getElementById('view-settings').classList.remove('hidden'); setupAdminControlVisibility(); }
+            else if (targetView === 'account-info') {
                 document.getElementById('view-account-info').classList.remove('hidden');
                 document.getElementById('info-uid-field').textContent = sessionData.uid;
                 document.getElementById('info-username-field').textContent = sessionData.username;
@@ -1352,87 +1360,37 @@
             }
         }
 
-        function executeLogout() {
-            localStorage.removeItem('meow_user_session');
-            location.reload();
-        }
+        function executeLogout() { localStorage.removeItem('meow_user_session'); location.reload(); }
 
         function init3D() {
-            const container = document.getElementById('canvas-3d-container');
-            if(!container) return;
-            
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x050300);
-
-            camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-            camera.position.set(0, 0.2, 7);
-
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
-            scene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-            directionalLight.position.set(4, 8, 5);
-            scene.add(directionalLight);
-
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            container.appendChild(renderer.domElement);
+            const container = document.getElementById('canvas-3d-container'); if(!container) return;
+            scene = new THREE.Scene(); scene.background = new THREE.Color(0x050300);
+            camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100); camera.position.set(0, 0.2, 7);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.75));
+            let dl = new THREE.DirectionalLight(0xffffff, 0.5); dl.position.set(4, 8, 5); scene.add(dl);
+            renderer = new THREE.WebGLRenderer({ antialias: true }); container.appendChild(renderer.domElement);
 
             characterGroup = new THREE.Group();
+            let skinMat = new THREE.MeshLambertMaterial({ color: 0xffdbac }), shirtMat = new THREE.MeshLambertMaterial({ color: 0xff941a }), pantsMat = new THREE.MeshLambertMaterial({ color: 0x1e3799 });
+            let headGeo = new THREE.BoxGeometry(0.8, 0.8, 0.8), torsoGeo = new THREE.BoxGeometry(1.0, 1.6, 0.5), limbGeo = new THREE.BoxGeometry(0.45, 1.5, 0.45);
 
-            const skinMat = new THREE.MeshLambertMaterial({ color: 0xffdbac });
-            const shirtMat = new THREE.MeshLambertMaterial({ color: 0xff941a });
-            const pantsMat = new THREE.MeshLambertMaterial({ color: 0x1e3799 });
+            headMesh = new THREE.Mesh(headGeo, skinMat); headMesh.position.y = 1.3; characterGroup.add(headMesh);
+            torsoMesh = new THREE.Mesh(torsoGeo, shirtMat); torsoMesh.position.y = 0.1; characterGroup.add(torsoMesh);
+            leftArm = new THREE.Mesh(limbGeo, skinMat); leftArm.position.set(-0.75, 0.1, 0); characterGroup.add(leftArm);
+            rightArm = new THREE.Mesh(limbGeo, skinMat); rightArm.position.set(0.75, 0.1, 0); characterGroup.add(rightArm);
+            leftLeg = new THREE.Mesh(limbGeo, pantsMat); leftLeg.position.set(-0.26, -1.45, 0); characterGroup.add(leftLeg);
+            rightLeg = new THREE.Mesh(limbGeo, pantsMat); rightLeg.position.set(0.26, -1.45, 0); characterGroup.add(rightLeg);
+            characterGroup.position.y = 0.2; scene.add(characterGroup);
 
-            const headGeo = new THREE.BoxGeometry(0.8, 0.8, 0.8);
-            const torsoGeo = new THREE.BoxGeometry(1.0, 1.6, 0.5); 
-            const limbGeo = new THREE.BoxGeometry(0.45, 1.5, 0.45); 
-
-            headMesh = new THREE.Mesh(headGeo, skinMat);
-            headMesh.position.y = 1.3;
-            characterGroup.add(headMesh);
-
-            torsoMesh = new THREE.Mesh(torsoGeo, shirtMat);
-            torsoMesh.position.y = 0.1;
-            characterGroup.add(torsoMesh);
-
-            leftArm = new THREE.Mesh(limbGeo, skinMat);
-            leftArm.position.set(-0.75, 0.1, 0); 
-            characterGroup.add(leftArm);
-
-            rightArm = new THREE.Mesh(limbGeo, skinMat);
-            rightArm.position.set(0.75, 0.1, 0);
-            characterGroup.add(rightArm);
-
-            leftLeg = new THREE.Mesh(limbGeo, pantsMat);
-            leftLeg.position.set(-0.26, -1.45, 0);
-            characterGroup.add(leftLeg);
-
-            rightLeg = new THREE.Mesh(limbGeo, pantsMat);
-            rightLeg.position.set(0.26, -1.45, 0);
-            characterGroup.add(rightLeg);
-
-            characterGroup.position.y = 0.2;
-            scene.add(characterGroup);
-
-            function animate() {
-                requestAnimationFrame(animate);
-                characterGroup.rotation.y += 0.015;
-                renderer.render(scene, camera);
-            }
+            function animate() { requestAnimationFrame(animate); characterGroup.rotation.y += 0.015; renderer.render(scene, camera); }
             animate();
         }
 
         function update3DColor(layer, hexString) {
-            const targetColor = new THREE.Color(hexString);
-            if (layer === 'skin') {
-                headMesh.material.color = targetColor;
-                leftArm.material.color = targetColor;
-                rightArm.material.color = targetColor;
-            } else if (layer === 'shirt') {
-                torsoMesh.material.color = targetColor;
-            } else if (layer === 'pants') {
-                leftLeg.material.color = targetColor;
-                rightLeg.material.color = targetColor;
-            }
+            const tc = new THREE.Color(hexString);
+            if (layer === 'skin') { headMesh.material.color = tc; leftArm.material.color = tc; rightArm.material.color = tc; }
+            else if (layer === 'shirt') torsoMesh.material.color = tc;
+            else if (layer === 'pants') { leftLeg.material.color = tc; rightLeg.material.color = tc; }
         }
     </script>
 </body>
