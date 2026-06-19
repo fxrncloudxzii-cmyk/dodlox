@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeowBlox - Dashboard</title>
+    <title>MeowBlox - Dashboard & Client</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         * {
@@ -110,7 +110,7 @@
             gap: 15px;
         }
 
-        .auth-form input, .auth-form select, .admin-action-box input, .admin-action-box select, .modal-body input, .modal-body textarea, .search-bar-wrapper input {
+        .auth-form input, .auth-form select, .admin-action-box input, .admin-action-box select, .modal-body input, .modal-body textarea, .search-bar-wrapper input, .client-chat-input-row input {
             padding: 12px;
             border-radius: 6px;
             border: 1px solid var(--border-color);
@@ -121,12 +121,12 @@
             transition: border-color 0.2s;
         }
 
-        .auth-form input:focus, .admin-action-box input:focus, .modal-body textarea:focus, .search-bar-wrapper input:focus {
+        .auth-form input:focus, .admin-action-box input:focus, .modal-body textarea:focus, .search-bar-wrapper input:focus, .client-chat-input-row input:focus {
             outline: none;
             border-color: var(--accent-color);
         }
 
-        .auth-form button, .admin-btn, .play-button-large, .action-choice-btn {
+        .auth-form button, .admin-btn, .play-button-large, .action-choice-btn, .client-send-btn {
             background-color: var(--accent-color);
             color: white;
             border: none;
@@ -137,7 +137,7 @@
             cursor: pointer;
             transition: background 0.2s, transform 0.1s;
         }
-        .auth-form button:hover, .play-button-large:hover, .action-choice-btn:hover {
+        .auth-form button:hover, .play-button-large:hover, .action-choice-btn:hover, .client-send-btn:hover {
             background-color: var(--accent-hover);
         }
 
@@ -183,7 +183,7 @@
             border-top: none;
             border-radius: 0 0 8px 8px;
             z-index: 99;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 166px rgba(0,0,0,0.5);
             max-height: 250px;
             overflow-y: auto;
         }
@@ -205,7 +205,6 @@
             flex-shrink: 0;
         }
 
-        /* NOTIFICATION BELL UI SYSTEM */
         .bell-wrapper {
             position: relative;
             cursor: pointer;
@@ -217,7 +216,6 @@
             border-radius: 50%;
             background-color: var(--input-bg);
             border: 1px solid var(--border-color);
-            transition: border-color 0.2s;
         }
         .bell-wrapper:hover { border-color: var(--accent-color); }
         .bell-badge {
@@ -240,9 +238,7 @@
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
-            transition: background 0.2s;
         }
-        .menu-btn:hover { background-color: #452303; }
 
         .container {
             padding: 30px;
@@ -278,7 +274,6 @@
             padding: 25px;
             max-width: 700px;
             margin: 20px auto;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
         }
 
         .explorer-output-block {
@@ -307,13 +302,11 @@
             background-color: #2ecc71; color: white; border: none; padding: 12px 20px;
             border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%;
         }
-        .save-btn:hover { filter: brightness(1.1); }
 
         .back-btn {
             background: none; border: 1px solid var(--border-color); color: #888;
             padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-bottom: 20px; font-weight: 500;
         }
-        .back-btn:hover { color: white; border-color: white; }
 
         .greeting-header { font-size: 28px; font-weight: bold; margin-bottom: 25px; display: flex; align-items: center; }
         .section-block { margin-bottom: 35px; }
@@ -321,22 +314,17 @@
 
         .horizontal-scroller { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; align-items: center; }
 
-        /* UPGRADED FRIEND CARD PLATFORM UI */
         .friend-card {
             background: linear-gradient(145deg, #1f1103, #150b01);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px;
-            min-width: 150px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color); border-radius: 8px;
+            padding: 15px; min-width: 150px; text-align: center;
         }
         .friend-avatar-stub {
             width: 50px; height: 50px; background-color: var(--input-bg);
             border-radius: 50%; margin: 0 auto 10px auto;
             border: 2px solid var(--accent-color);
             display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 18px; color: #fff;
+            font-weight: bold; font-size: 18px;
         }
 
         .game-strip-card {
@@ -347,7 +335,7 @@
         .game-strip-card:hover { transform: scale(1.03); }
         .game-strip-thumb {
             height: 110px; display: flex; align-items: center; justify-content: center;
-            font-size: 15px; font-weight: bold; color: #fff; text-align: center; padding: 10px;
+            font-size: 15px; font-weight: bold; text-align: center; padding: 10px;
         }
         .game-strip-title { padding: 10px; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -360,7 +348,6 @@
         .game-main-thumb {
             height: 240px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
             font-size: 24px; font-weight: bold; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            box-shadow: inset 0 0 40px rgba(0,0,0,0.4);
         }
         .game-details-box { display: flex; flex-direction: column; justify-content: space-between; }
         .game-meta-desc { font-size: 14px; color: #b3b3b3; line-height: 1.6; margin: 15px 0; }
@@ -371,12 +358,11 @@
         }
         .stat-item { text-align: center; }
         .stat-label { display: block; font-size: 11px; text-transform: uppercase; color: #777; margin-bottom: 4px; }
-        .stat-value { font-size: 16px; font-weight: bold; color: #fff; }
-        .play-button-large { width: 100%; padding: 18px; font-size: 20px; letter-spacing: 1px; }
+        .stat-value { font-size: 16px; font-weight: bold; }
 
         .info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
         .info-label { color: #888888; }
-        .info-value { font-weight: bold; color: #ffffff; }
+        .info-value { font-weight: bold; }
 
         .admin-action-box { background: rgba(255,148,26,0.02); border: 1px dashed var(--border-color); padding: 20px; border-radius: 8px; margin-top: 25px; }
         .admin-btn-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 15px; }
@@ -388,39 +374,184 @@
         .modal-content { background-color: var(--panel-color); border: 1px solid var(--border-color); padding: 25px; border-radius: 8px; width: 100%; max-width: 450px; }
         .modal-body { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
 
-        .action-choice-btn { padding: 12px; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-
-        /* NOTIFICATION BOX CARD ELEMENTS */
         .notif-item {
-            background-color: var(--input-bg);
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+            background-color: var(--input-bg); border: 1px solid var(--border-color);
+            padding: 12px; border-radius: 6px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px;
         }
         .notif-actions { display: flex; gap: 8px; }
 
-        .punish-text { text-align: left; margin: 20px 0; background: #000; padding: 15px; border-radius: 6px; border: 1px solid #331c03; font-size: 14px; line-height: 1.6; }
+        /* --- MEOWBLOX 3D LIVE CLIENT ENGINE INTERFACE --- */
+        #game-client-viewport-container {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #020100; z-index: 5000; display: flex; flex-direction: column;
+        }
+        #client-three-canvas { width: 100%; flex: 1; background: #070401; position: relative; }
+        
+        .client-top-hud {
+            position: absolute; top: 15px; left: 15px; display: flex; align-items: center; gap: 15px; z-index: 5010;
+        }
+        .client-brand-menu-trigger {
+            width: 44px; height: 44px; background: var(--panel-color); border: 2px solid var(--accent-color);
+            border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: transform 0.1s;
+        }
+        .client-brand-menu-trigger:active { transform: scale(0.95); }
+        .client-brand-menu-trigger img { width: 30px; height: 30px; object-fit: contain; }
+
+        /* IN-GAME ESC CORE OVERLAY */
+        .client-esc-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 5500;
+        }
+        .client-esc-box {
+            background: var(--panel-color); border: 2px solid var(--border-color); border-radius: 12px;
+            width: 90%; max-width: 480px; padding: 30px; text-align: center;
+            box-shadow: 0 10px 30px rgba(255,148,26,0.15);
+        }
+
+        /* OVERHEAD 2D BILLBOARD CANVAS CHAT BUBBLES */
+        .bubble-chat-billboard {
+            position: absolute; padding: 8px 14px; background: rgba(255, 255, 255, 0.95);
+            color: #111; font-size: 13px; font-weight: 600; border-radius: 12px;
+            max-width: 180px; word-wrap: break-word; text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); pointer-events: none;
+            transform: translate(-50%, -100%); transition: opacity 0.2s;
+            z-index: 5005; border: 2px solid var(--accent-color);
+        }
+        .bubble-chat-billboard::after {
+            content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+            border-width: 8px 8px 0; border-style: solid; border-color: rgba(255, 255, 255, 0.95) transparent;
+        }
+
+        /* TEXT CHAT LOGGER BOX */
+        .client-text-chat-module {
+            position: absolute; bottom: 20px; left: 20px; width: 320px;
+            background: rgba(13, 6, 0, 0.75); border: 1px solid var(--border-color);
+            border-radius: 8px; display: flex; flex-direction: column; padding: 10px; z-index: 5010;
+        }
+        .client-chat-log { height: 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; margin-bottom: 8px; padding-right: 5px; }
+        .client-chat-row-msg { font-size: 12px; line-height: 1.4; word-break: break-all; }
+        .client-chat-input-row { display: flex; gap: 8px; }
+        .client-chat-input-row input { padding: 8px 12px; font-size: 13px; border-radius: 4px; }
+        .client-send-btn { padding: 8px 14px; font-size: 13px; border-radius: 4px; }
+
+        /* RADIAL EMOTE WHEEL SYSTEM */
+        .client-emote-wheel-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 5600;
+        }
+        .radial-wheel-wrapper {
+            position: relative; width: 300px; height: 300px; border-radius: 50%;
+            background: rgba(26, 14, 2, 0.9); border: 4px solid var(--accent-color);
+            box-shadow: 0 0 30px rgba(255,148,26,0.3); display: flex; align-items: center; justify-content: center;
+        }
+        .radial-center-node {
+            width: 70px; height: 70px; background: var(--bg-color); border: 2px solid var(--border-color);
+            border-radius: 50%; z-index: 5; display: flex; align-items: center; justify-content: center;
+            font-size: 11px; text-transform: uppercase; font-weight: bold; color: var(--accent-color);
+        }
+        .radial-emote-sector {
+            position: absolute; width: 90px; height: 50px; background: var(--input-bg);
+            border: 1px solid var(--border-color); border-radius: 6px; display: flex;
+            align-items: center; justify-content: center; text-align: center; font-size: 12px;
+            font-weight: bold; cursor: pointer; color: #fff; transition: background 0.2s, transform 0.1s;
+        }
+        .radial-emote-sector:hover { background: var(--accent-color); transform: scale(1.08); }
+
+        .client-bottom-controls-right {
+            position: absolute; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 5010;
+        }
+
         footer { background-color: #080400; border-top: 1px solid var(--border-color); padding: 25px 20px; text-align: center; margin-top: auto; font-size: 12px; color: #666; }
-        .footer-links { display: flex; justify-content: center; gap: 20px; margin-bottom: 12px; flex-wrap: wrap; }
+        .footer-links { display: flex; justify-content: center; gap: 20px; margin-bottom: 12px; }
         .footer-links a { color: #aaa; text-decoration: none; }
         .footer-links a:hover { color: var(--accent-color); }
+
+        /* 📡 ISOLATED IFRAME CONTAINER FOR LIVE RUNTIME BOOTLOADER */
+        #embedded-game-frame-runtime {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #020100;
+            z-index: 5002;
+        }
     </style>
 </head>
 <body>
 
+    <div id="game-client-viewport-container" class="hidden">
+        
+        <iframe id="embedded-game-frame-runtime" class="hidden" src="" allow="autoplay; fullscreen"></iframe>
+
+        <div id="client-bubble-container-layer" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:5020;"></div>
+
+        <div class="client-top-hud">
+            <div class="client-brand-menu-trigger" onclick="toggleClientEscapeMenu(true)">
+                <img src="https://cdn.discordapp.com/attachments/1503068697118511116/1517223710170546428/nd5qnst.png?ex=6a358031&is=6a342eb1&hm=85f3ec0275e9ea93715c7a8bb9f8f5fa9c5115f93f1ea4df03c19b4a270e892c&" alt="M">
+            </div>
+            <div id="client-instance-header-title" style="font-weight:bold; font-size:16px; text-shadow:0 2px 4px rgba(0,0,0,0.8); background:rgba(0,0,0,0.4); padding:4px 10px; border-radius:4px;">MeowBlox Realm</div>
+        </div>
+
+        <div id="client-esc-overlay" class="client-esc-overlay hidden">
+            <div class="client-esc-box">
+                <h2 style="border:none; margin-bottom:10px;">Game Settings Matrix</h2>
+                <p style="font-size:13px; color:#aaa; margin-bottom:20px;">Instance Node Server ID: MB-SIM-2026</p>
+                
+                <div style="text-align:left; margin-bottom:25px;">
+                    <label style="font-size:12px; color:#888; display:block; margin-bottom:5px;">Master Sound Engine Volume</label>
+                    <input type="range" min="0" max="100" value="80" style="width:100%; accent-color:var(--accent-color); margin-bottom:15px;">
+                    
+                    <label style="font-size:12px; color:#888; display:block; margin-bottom:5px;">3D Graphics Rendering Profile</label>
+                    <select style="width:100%; padding:10px; background:#000; border:1px solid var(--border-color); color:#fff; border-radius:4px;">
+                        <option>Automatic (MeowEngine Adaptive)</option>
+                        <option>Maximum Fidelity (Voxel Tracing)</option>
+                        <option>Performance Optimization</option>
+                    </select>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <button class="admin-btn" style="background:#2ecc71;" onclick="toggleClientEscapeMenu(false)">Resume Instance</button>
+                    <button class="admin-btn danger" onclick="terminateActiveClientGame()">Leave Game Instance</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="client-emote-wheel-overlay" class="client-emote-wheel-overlay hidden" onclick="toggleClientEmoteWheel(false)">
+            <div class="radial-wheel-wrapper" onclick="event.stopPropagation()">
+                <div class="radial-center-node">Emotes</div>
+                <div class="radial-emote-sector" style="top:20px; left:105px;" onclick="executeSelectedEmote('macarena')">💃 Macarena</div>
+                <div class="radial-emote-sector" style="top:125px; right:15px;" onclick="executeSelectedEmote('take-l')">🤡 Take the L</div>
+                <div class="radial-emote-sector" style="bottom:20px; left:105px;" onclick="executeSelectedEmote('sea-lion')">🦭 Sea Lion</div>
+                <div class="radial-emote-sector" style="top:125px; left:15px;" onclick="executeSelectedEmote('tiki-tiki')">🗿 Tiki Tiki</div>
+            </div>
+        </div>
+
+        <div id="client-three-canvas"></div>
+
+        <div class="client-text-chat-module">
+            <div id="client-chat-log" class="client-chat-log"></div>
+            <form class="client-chat-input-row" onsubmit="dispatchClientChatMessage(event)">
+                <input type="text" id="client-chat-field" placeholder="Type a chat message... (Filter active)" autocomplete="off">
+                <button type="submit" class="client-send-btn">Send</button>
+            </form>
+        </div>
+
+        <div class="client-bottom-controls-right">
+            <button class="menu-btn" style="background:#222; font-size:13px;" onclick="toggleClientEmoteWheel(true)">🎭 Emotes [ . ]</button>
+        </div>
+    </div>
+
     <div id="punishment-screen" class="hidden">
         <div class="punish-card">
-            <h1 style="color: #e74c3c;">⚠️ Account Punished</h1>
+            <h1 style="color: #e74c3c;">⚠️ Account Restrained</h1>
             <div class="punish-text">
                 <strong>Enforcement Type:</strong> <span id="p-type" style="color:#e74c3c;">-</span><br>
                 <strong>Timestamp:</strong> <span id="p-time">-</span><br>
                 <strong>Reason Provided:</strong> <span id="p-reason" style="color: #fff;">-</span><br><br>
                 <strong>Moderator Security Note:</strong><br>
-                <strong>Appeal: https://forms.gle/xNvkScs4LogATV119</strong>
                 <span id="p-note" style="color: #ff941a; font-style: italic;">-</span>
             </div>
             <button class="admin-btn" style="width: 100%;" onclick="executeLogout()">Return to Login Gateway</button>
@@ -512,7 +643,6 @@
         <div class="container">
             
             <div id="view-home">
-                
                 <div id="explorer-output-section" class="explorer-output-block hidden">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid var(--border-color); padding-bottom:8px;">
                         <h3 id="explorer-title" style="border:none; margin:0; font-size:18px;">🔍 Explorer Results</h3>
@@ -572,18 +702,18 @@
                             <div class="game-stats-row">
                                 <div class="stat-item">
                                     <span class="stat-label">Active</span>
-                                    <span class="stat-value" id="game-page-ccu">0</span>
+                                    <span class="stat-value" id="game-page-ccu">1,402</span>
                                 </div>
                                 <div class="stat-item">
                                     <span class="stat-label">Visits</span>
-                                    <span class="stat-value" id="game-page-visits">0</span>
+                                    <span class="stat-value" id="game-page-visits">48.2M</span>
                                 </div>
                                 <div class="stat-item">
                                     <span class="stat-label">Rating</span>
                                     <span class="stat-value" style="color:#2ecc71;">94%</span>
                                 </div>
                             </div>
-                            <button id="game-page-play-btn" class="play-button-large">▶ Play Instance</button>
+                            <button id="game-page-play-btn" class="play-button-large" onclick="launchGameEngineInstance()">▶ Play Instance</button>
                         </div>
                     </div>
                 </div>
@@ -615,20 +745,20 @@
                     <div id="canvas-3d-container"></div>
                     <div class="customizer-ui">
                         <label>Skin Complexion</label>
-                        <select onchange="update3DColor('skin', this.value)">
+                        <select id="customizer-skin-select" onchange="update3DColor('skin', this.value)">
                             <option value="#ffdbac">Pale Tone</option>
                             <option value="#f1c27d">Tan Tone</option>
                             <option value="#e0ac69">Golden Brown</option>
                             <option value="#ff941a">MeowBlox Neon Orange</option>
                         </select>
                         <label>Torso / Shirt Layer Color</label>
-                        <select onchange="update3DColor('shirt', this.value)">
+                        <select id="customizer-shirt-select" onchange="update3DColor('shirt', this.value)">
                             <option value="#ff941a">Classic Orange Torso</option>
                             <option value="#e74c3c">Crimson Graphic Tee</option>
                             <option value="#2ecc71">Emerald Jersey Shirt</option>
                         </select>
                         <label>Legs / Pants Layer Color</label>
-                        <select onchange="update3DColor('pants', this.value)">
+                        <select id="customizer-pants-select" onchange="update3DColor('pants', this.value)">
                             <option value="#1e3799">Dark Denim Pants</option>
                             <option value="#e67e22">Bright Orange Slacks</option>
                         </select>
@@ -651,27 +781,17 @@
                         </select>
                         <button class="save-btn" onclick="saveConfigurationProfile()">Save Modifications</button>
                     </div>
-
+                    
                     <div id="admin-control-panel" class="admin-action-box hidden">
                         <h3 style="border:none; margin-bottom:5px; font-size:16px;">🛡️ MeowBlox Administration Terminal</h3>
                         <label>Target User Profile</label>
                         <input type="text" id="admin-target-user" placeholder="Enter target profile username...">
-                        
                         <div class="admin-btn-group">
                             <button id="abtn-mod" class="admin-btn success hidden" onclick="triggerImmediateAction('give-mod')">Permit Mod</button>
                             <button id="abtn-admin" class="admin-btn success hidden" onclick="triggerImmediateAction('give-admin')">Permit Admin</button>
                             <button id="abtn-warn" class="admin-btn warn hidden" onclick="openAdminModal('warn')">Warn User</button>
                             <button id="abtn-ban" class="admin-btn danger hidden" onclick="openAdminModal('ban')">Ban Profile</button>
                             <button id="abtn-term" class="admin-btn danger hidden" onclick="openAdminModal('terminate')">Terminate</button>
-                        </div>
-
-                        <div id="admin-advanced-box" class="hidden" style="margin-top:20px; border-top:1px solid var(--border-color); padding-top:15px;">
-                            <label>Target Account UserID Token</label>
-                            <input type="text" id="admin-target-uid" placeholder="Format example: MB:001">
-                            <div class="admin-btn-group" style="grid-template-columns: 1fr 1fr;">
-                                <button id="abtn-unban" class="admin-btn success hidden" onclick="executeAdvancedLift('unban')">Lift Account Ban</button>
-                                <button id="abtn-wipe" class="admin-btn warn hidden" onclick="executeAdvancedLift('wipe')">Wipe Warnings</button>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -720,549 +840,604 @@
     <script>
         let scene, camera, renderer, characterGroup;
         let headMesh, torsoMesh, leftArm, rightArm, leftLeg, rightLeg;
-
-        // SESSION AND NETWORKING STATE STRUCTURE
-        let sessionData = { username: "", uid: "", created: "", gender: "Unspecified", theme: "orange", role: "Player", friends: [], notifications: [] };
-
-        let userRegistry = JSON.parse(localStorage.getItem('meow_user_registry')) || {
-            "MeowBlox": { username: "MeowBlox", uid: "MB:001", password: "123", created: "06/15/2026, 12:00:00 PM", gender: "Other", role: "Owner" },
-            "KittyPlayer": { username: "KittyPlayer", uid: "MB:002", password: "123", created: "06/16/2026, 04:30:22 PM", gender: "Female", role: "Player" },
-            "BlockCat": { username: "BlockCat", uid: "MB:003", password: "123", created: "06/17/2026, 09:15:40 AM", gender: "Male", role: "Player" }
+        
+        let activeUserSession = null;
+        let currentActiveView = "auth";
+        let registeredProfilesDB = JSON.parse(localStorage.getItem('mb_users_db')) || {};
+        let activePunishmentsDB = JSON.parse(localStorage.getItem('mb_punishments_db')) || {};
+        
+        let defaultGamesRegistry = {
+            "adopt": { title: "Adopt Me!", ccu: "4,120", visits: "52.1M", desc: "Raise and dress cute pet modules, design your structural interior apartment box, complete live need sequences, and trade assets with peers!" },
+            "mm2": { title: "Murder Mystery 2", ccu: "840", visits: "12.8M", desc: "Expose the truth or eliminate all targets before your identity is tracked." }
         };
-        let activePunishments = JSON.parse(localStorage.getItem('meow_punishments')) || {};
+        let selectedViewedGameKey = "adopt";
 
-        const gameDatabase = {
-            adopt: { title: "Adopt Me!", desc: "Raise and dress cute pets, decorate your house, and explore the magical world of Adoption Island!", style: "linear-gradient(135deg, #ff9f43, #ff5252)" },
-            mm2: { title: "Murder Mystery 2", desc: "Can you solve the mystery and survive each round? Innocents must run and hide!", style: "linear-gradient(135deg, #74b9ff, #0984e3)" }
-        };
-
-        let activeModalType = "";
-        let currentSearchQuery = "";
+        let clientScene, clientCamera, clientRenderer, playerBoxMesh;
+        let clientAnimationId = null;
+        let clientChatHistory = [];
+        let activeEmoteKey = null, emoteTimer = 0, currentClientActiveEmote = null;
 
         window.addEventListener('DOMContentLoaded', () => {
-            saveRegistry();
-            loadSessionData();
-            init3D();
+            initializeSystemDefaults();
+            setupInterFramePostMessageEngine();
         });
 
-        function saveRegistry() {
-            localStorage.setItem('meow_user_registry', JSON.stringify(userRegistry));
-            localStorage.setItem('meow_punishments', JSON.stringify(activePunishments));
-        }
-
-        function locateUserObject(name) {
-            if (!name) return null;
-            const search = name.toLowerCase();
-            for (let key in userRegistry) {
-                if (key.toLowerCase() === search) return userRegistry[key];
-            }
-            return null;
-        }
-
-        function generateCustomUID() {
-            let nextIndex = Object.keys(userRegistry).length + 1;
-            return "MB:" + String(nextIndex).padStart(3, '0');
-        }
-
-        // --- LIVE SEARCH AND SOCIAL HUB CONNECTOR ENGINE ---
-
-        function handleSearchTyping(val) {
-            const query = val.toLowerCase().trim();
-            const container = document.getElementById('search-suggestions');
-            
-            if(!query) {
-                container.classList.add('hidden');
-                return;
-            }
-
-            let matchesHTML = "";
-            let matchCount = 0;
-
-            for (let key in gameDatabase) {
-                if(gameDatabase[key].title.toLowerCase().includes(query)) {
-                    matchesHTML += `
-                        <div class="suggestion-item" onmousedown="openGamePage('${key}')">
-                            <div class="suggestion-category">Game Instance</div>
-                            <strong>${gameDatabase[key].title}</strong>
-                        </div>`;
-                    matchCount++;
-                }
-            }
-
-            for (let name in userRegistry) {
-                if(name.toLowerCase().includes(query) && name.toLowerCase() !== sessionData.username.toLowerCase()) {
-                    matchesHTML += `
-                        <div class="suggestion-item" onmousedown="executeQuickUserDisplay('${userRegistry[name].username}')">
-                            <div class="suggestion-category">User Account</div>
-                            <strong>${userRegistry[name].username}</strong> (${userRegistry[name].uid})
-                        </div>`;
-                    matchCount++;
-                }
-            }
-
-            if(matchCount > 0) {
-                container.innerHTML = matchesHTML;
-                container.classList.remove('hidden');
-            } else {
-                container.innerHTML = `<div class="suggestion-item" style="color:#777; cursor:default;">No immediate matches found.</div>`;
-                container.classList.remove('hidden');
-            }
-        }
-
-        function handleSearchBlur() {
-            setTimeout(() => { document.getElementById('search-suggestions').classList.add('hidden'); }, 180);
-        }
-
-        function handleSearchKeyDown(event, val) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                const query = val.trim();
-                if (!query) return;
-                currentSearchQuery = query;
-                document.getElementById('modal-routing-query-text').textContent = query;
-                document.getElementById('search-suggestions').classList.add('hidden');
-                document.getElementById('search-routing-modal').classList.remove('hidden');
-            }
-        }
-
-        function closeRoutingModal() { document.getElementById('search-routing-modal').classList.add('hidden'); }
-
-        function triggerRoutedSearch(engineType) {
-            closeRoutingModal();
-            navigateTo('home');
-
-            const outBlock = document.getElementById('explorer-output-section');
-            const dataDump = document.getElementById('explorer-data-dump');
-            outBlock.classList.remove('hidden');
-
-            if(engineType === 'game') {
-                document.getElementById('explorer-title').textContent = `🎮 Game Explorer: "${currentSearchQuery}"`;
-                let foundGame = null;
-                for(let key in gameDatabase) {
-                    if(gameDatabase[key].title.toLowerCase().includes(currentSearchQuery.toLowerCase())) { foundGame = key; break; }
-                }
-
-                if(foundGame) {
-                    const g = gameDatabase[foundGame];
-                    dataDump.innerHTML = `
-                        <div style="background:rgba(255,255,255,0.03); border-radius:6px; border:1px solid var(--border-color); padding:15px;">
-                            <h4 style="color:var(--accent-color); margin-bottom:5px; font-size:16px;">${g.title}</h4>
-                            <p style="font-size:13px; color:#ccc; margin-bottom:12px;">${g.desc}</p>
-                            <button class="admin-btn success" onclick="openGamePage('${foundGame}')">Go to Game Profile Page</button>
-                        </div>`;
-                } else {
-                    dataDump.innerHTML = `<p style="color:#e74c3c; font-size:13px;">No structural game modules found matching parameters.</p>`;
-                }
-            } else {
-                document.getElementById('explorer-title').textContent = `👤 User Explorer: "${currentSearchQuery}"`;
-                const matchedUser = locateUserObject(currentSearchQuery);
-
-                if(matchedUser) {
-                    const isFriend = sessionData.friends.includes(matchedUser.username);
-                    let socialActionButton = "";
-
-                    if (matchedUser.username.toLowerCase() === sessionData.username.toLowerCase()) {
-                        socialActionButton = `<p style="color:#777; font-style:italic; font-size:12px; margin-top:10px;">This is your own account profile ecosystem.</p>`;
-                    } else if (isFriend) {
-                        socialActionButton = `<button class="admin-btn success" style="margin-top:10px; cursor:default;" disabled>✅ Friends</button>`;
-                    } else {
-                        socialActionButton = `<button class="admin-btn success" style="margin-top:10px; background-color:var(--accent-color);" onclick="dispatchFriendRequest('${matchedUser.username}')">➕ Send Friend Request</button>`;
-                    }
-
-                    dataDump.innerHTML = `
-                        <div style="font-size: 13px; line-height: 1.6; background:rgba(0,0,0,0.2); border:1px dashed var(--border-color); padding:15px; border-radius:6px;">
-                            <div><strong style="color:var(--accent-color);">Account Profile Name:</strong> ${matchedUser.username}</div>
-                            <div><strong>Custom ID:</strong> <span style="font-family:monospace; color:#2ecc71;">${matchedUser.uid}</span></div>
-                            <div><strong>Clearance Level:</strong> ${matchedUser.role}</div>
-                            <div><strong>Established Joined Stamp:</strong> ${matchedUser.created}</div>
-                            ${socialActionButton}
-                        </div>`;
-                } else {
-                    dataDump.innerHTML = `<p style="color:#e74c3c; font-size:13px;">No registered account objects found matching profile moniker.</p>`;
-                }
-            }
-        }
-
-        function executeQuickUserDisplay(username) {
-            currentSearchQuery = username;
-            triggerRoutedSearch('user');
-        }
-
-        function clearExplorerOutputSection() {
-            document.getElementById('explorer-output-section').classList.add('hidden');
-            document.getElementById('global-search-input').value = "";
-        }
-
-        // --- SYSTEM SOCIAL NETWORK & NOTIFICATION CORE ---
-
-        function dispatchFriendRequest(targetName) {
-            const targetUser = locateUserObject(targetName);
-            if (!targetUser) return;
-
-            // In local storage network architecture, mock inject into target log array
-            let targetSessionKey = 'meow_session_backup_' + targetUser.username.toLowerCase();
-            let targetData = JSON.parse(localStorage.getItem(targetSessionKey)) || { friends: [], notifications: [] };
-            
-            // Avoid duplicate pushes
-            if (!targetData.notifications.some(n => n.from === sessionData.username && n.type === 'friend')) {
-                targetData.notifications.push({
-                    id: 'fr_' + Date.now(),
-                    type: 'friend',
-                    from: sessionData.username,
-                    message: `${sessionData.username} sent you a friend request!`
-                });
-                localStorage.setItem(targetSessionKey, JSON.stringify(targetData));
-                alert(`Friend transmission successfully routed to ${targetUser.username}!`);
-            } else {
-                alert(`A pending request notification is already active on this node link.`);
-            }
-        }
-
-        function rebuildNotificationCenterUI() {
-            const container = document.getElementById('notifications-list-container');
-            const counter = document.getElementById('bell-counter-badge');
-            
-            if(!sessionData.notifications || sessionData.notifications.length === 0) {
-                container.innerHTML = `<p style="color:#666; font-size:14px; text-align:center; padding:20px 0;">Your notification log matrix is entirely clear.</p>`;
-                counter.classList.add('hidden');
-                return;
-            }
-
-            counter.textContent = sessionData.notifications.length;
-            counter.classList.remove('hidden');
-
-            let html = "";
-            sessionData.notifications.forEach(notif => {
-                html += `
-                    <div class="notif-item">
-                        <div style="font-size:13px;"><strong style="color:var(--accent-color);">🤝 Network Alert:</strong> ${notif.message}</div>
-                        <div class="notif-actions">
-                            <button class="admin-btn success" style="padding:6px 12px; font-size:12px;" onclick="resolveFriendRequest('${notif.id}', true, '${notif.from}')">Accept</button>
-                            <button class="admin-btn danger" style="padding:6px 12px; font-size:12px;" onclick="resolveFriendRequest('${notif.id}', false, '${notif.from}')">Decline</button>
-                        </div>
-                    </div>`;
-            });
-            container.innerHTML = html;
-        }
-
-        function resolveFriendRequest(notifId, accepted, senderName) {
-            // Remove notification from stack
-            sessionData.notifications = sessionData.notifications.filter(n => n.id !== notifId);
-            
-            if(accepted) {
-                if (!sessionData.friends.includes(senderName)) {
-                    sessionData.friends.push(senderName);
-                }
-                // Sync the counterparty's network node array too
-                let partnerKey = 'meow_session_backup_' + senderName.toLowerCase();
-                let partnerData = JSON.parse(localStorage.getItem(partnerKey)) || { friends: [], notifications: [] };
-                if (!partnerData.friends.includes(sessionData.username)) {
-                    partnerData.friends.push(sessionData.username);
-                    localStorage.setItem(partnerKey, JSON.stringify(partnerData));
-                }
-                alert(`Connection securely established with ${senderName}!`);
-            }
-
-            saveSessionToStorage();
-            rebuildNotificationCenterUI();
-            rebuildFriendsScrollerUI();
-        }
-
-        function rebuildFriendsScrollerUI() {
-            const box = document.getElementById('home-friends-scroller');
-            if(!sessionData.friends || sessionData.friends.length === 0) {
-                box.innerHTML = `<p id="empty-friends-notice" style="color: #666; font-size: 14px; padding: 10px 0;">No active friends added yet.</p>`;
-                return;
-            }
-
-            let html = "";
-            sessionData.friends.forEach(friend => {
-                html += `
-                    <div class="friend-card">
-                        <div class="friend-avatar-stub">${friend.charAt(0).toUpperCase()}</div>
-                        <div style="font-size:13px; font-weight:600; overflow:hidden; text-overflow:ellipsis;">${friend}</div>
-                        <div style="font-size:11px; color:#2ecc71; margin-top:2px;">● Online</div>
-                    </div>`;
-            });
-            box.innerHTML = html;
-        }
-
-        // --- AUTH & DATA CONTROL MANAGERS ---
-
-        function switchAuthTab(targetTab) {
-            const loginForm = document.getElementById('form-login');
-            const signupForm = document.getElementById('form-signup');
-            const loginBtn = document.getElementById('toggle-tab-login');
-            const signupBtn = document.getElementById('toggle-tab-signup');
-
-            if (targetTab === 'signup') {
-                loginForm.classList.add('hidden'); signupForm.classList.remove('hidden');
-                signupBtn.classList.add('active'); loginBtn.classList.remove('active');
-            } else {
-                signupForm.classList.add('hidden'); loginForm.classList.remove('hidden');
-                loginBtn.classList.add('active'); signupBtn.classList.remove('active');
-            }
-        }
-
-        function executeAuth(event, type) {
-            event.preventDefault();
-            if (type === 'signup') {
-                const user = document.getElementById('signup-user').value.trim();
-                const pass = document.getElementById('signup-pass').value;
-                const gender = document.getElementById('signup-gender').value || "Unspecified";
-
-                if (locateUserObject(user)) { alert("This moniker is already cataloged."); return; }
-
-                const newUid = generateCustomUID();
-                let assignedRole = (user.toLowerCase() === "meowblox") ? "Owner" : "Player";
-                const stamp = new Date().toLocaleString();
-
-                userRegistry[user] = { username: user, uid: newUid, password: pass, created: stamp, gender: gender, role: assignedRole };
-                saveRegistry();
-                
-                sessionData = { username: user, uid: newUid, created: stamp, gender: gender, theme: "orange", role: assignedRole, friends: [], notifications: [] };
-            } else {
-                const user = document.getElementById('login-user').value.trim();
-                const pass = document.getElementById('login-pass').value;
-
-                const matchedAccount = locateUserObject(user);
-                if (!matchedAccount || matchedAccount.password !== pass) { alert("Credentials verification failure."); return; }
-                
-                // Fetch localized network backup state if existing
-                let backupKey = 'meow_session_backup_' + matchedAccount.username.toLowerCase();
-                let networkState = JSON.parse(localStorage.getItem(backupKey)) || { friends: [], notifications: [] };
-
-                sessionData = { 
-                    username: matchedAccount.username, uid: matchedAccount.uid, created: matchedAccount.created, 
-                    gender: matchedAccount.gender, theme: "orange", role: matchedAccount.role,
-                    friends: networkState.friends || [], notifications: networkState.notifications || []
+        function initializeSystemDefaults() {
+            // Force-register owner profile automatically on launch if missing
+            if (!registeredProfilesDB['meowblox']) {
+                registeredProfilesDB['meowblox'] = { 
+                    uid: "MB-OWNER", 
+                    user: "MeowBlox", 
+                    pass: "owner123", 
+                    perms: "admin", 
+                    gender: "Other", 
+                    created: new Date().toLocaleDateString() 
                 };
             }
-
-            if (checkPunishmentStatus(sessionData.username)) return;
-            saveSessionToStorage();
-            initiateUserSession();
-        }
-
-        function checkPunishmentStatus(username) {
-            const matchedAccount = locateUserObject(username);
-            if (!matchedAccount) return false;
-            
-            let punishment = null;
-            for (let key in activePunishments) { if (key.toLowerCase() === username.toLowerCase()) { punishment = activePunishments[key]; break; } }
-            if (!punishment) return false;
-
-            if (punishment.type === 'ban' && new Date().getTime() > punishment.expires) {
-                for (let key in activePunishments) { if (key.toLowerCase() === username.toLowerCase()) delete activePunishments[key]; }
-                saveRegistry();
-                return false;
+            if (!registeredProfilesDB['admin']) {
+                registeredProfilesDB['admin'] = { uid: "MB-10001", user: "admin", pass: "admin123", perms: "admin", gender: "Other", created: new Date().toLocaleDateString() };
             }
-
-            document.getElementById('auth-gateway').classList.add('hidden');
-            document.getElementById('app-canvas').classList.add('hidden');
-            document.getElementById('punishment-screen').classList.remove('hidden');
-
-            document.getElementById('p-type').textContent = punishment.type.toUpperCase();
-            document.getElementById('p-time').textContent = punishment.timestamp;
-            document.getElementById('p-reason').textContent = punishment.reason;
-            document.getElementById('p-note').textContent = punishment.note;
-            return true;
+            localStorage.setItem('mb_users_db', JSON.stringify(registeredProfilesDB));
+            evaluateAuthRoutingSession();
         }
 
-        function loadSessionData() {
-            const stored = localStorage.getItem('meow_user_session');
-            if (stored) {
-                sessionData = JSON.parse(stored);
-                
-                // Pull live updates from backup nodes to reflect any dynamic friend requests
-                let backupKey = 'meow_session_backup_' + sessionData.username.toLowerCase();
-                let networkState = JSON.parse(localStorage.getItem(backupKey)) || { friends: [], notifications: [] };
-                sessionData.friends = networkState.friends || [];
-                sessionData.notifications = networkState.notifications || [];
-
-                const currentRecord = locateUserObject(sessionData.username);
-                if(currentRecord) sessionData.role = currentRecord.role;
-                if (checkPunishmentStatus(sessionData.username)) return;
-                initiateUserSession();
+        function evaluateAuthRoutingSession() {
+            const savedSession = sessionStorage.getItem('mb_active_session');
+            if (savedSession && registeredProfilesDB[savedSession.toLowerCase() || savedSession]) {
+                const punishment = checkProfilePunishment(savedSession);
+                if (punishment) {
+                    renderPunishmentCardScreen(punishment);
+                } else {
+                    activeUserSession = registeredProfilesDB[savedSession.toLowerCase() || savedSession];
+                    renderActiveApplicationDashboard();
+                }
             } else {
-                document.getElementById('auth-gateway').classList.remove('hidden');
+                navigateTo('auth');
             }
-        }
-
-        function saveSessionToStorage() {
-            localStorage.setItem('meow_user_session', JSON.stringify(sessionData));
-            // Back up structural network dependencies
-            let backupKey = 'meow_session_backup_' + sessionData.username.toLowerCase();
-            localStorage.setItem(backupKey, JSON.stringify({ friends: sessionData.friends, notifications: sessionData.notifications }));
-        }
-
-        function initiateUserSession() {
-            document.getElementById('auth-gateway').classList.add('hidden');
-            document.getElementById('app-canvas').classList.remove('hidden');
-            
-            applyThemeStyles(sessionData.theme);
-            updateGreetingBanner();
-            setupAdminControlVisibility();
-            rebuildNotificationCenterUI();
-            rebuildFriendsScrollerUI();
-            
-            document.getElementById('settings-username-input').value = sessionData.username;
-            document.getElementById('settings-theme-select').value = sessionData.theme;
-            navigateTo('home');
-        }
-
-        function updateGreetingBanner() {
-            document.getElementById('welcome-banner').textContent = `Welcome back, ${sessionData.username}`;
-            document.getElementById('home-admin-badge').classList.toggle('hidden', sessionData.role === 'Player');
-        }
-
-        function setupAdminControlVisibility() {
-            const role = sessionData.role;
-            const panel = document.getElementById('admin-control-panel');
-            if (role === 'Player') { panel.classList.add('hidden'); return; }
-            panel.classList.remove('hidden');
-
-            document.getElementById('abtn-mod').classList.toggle('hidden', role !== 'Owner');
-            document.getElementById('abtn-admin').classList.toggle('hidden', role !== 'Owner');
-            document.getElementById('abtn-warn').classList.toggle('hidden', !['Owner', 'Administrator', 'Moderator'].includes(role));
-            document.getElementById('abtn-ban').classList.toggle('hidden', !['Owner', 'Administrator', 'Moderator'].includes(role));
-            document.getElementById('abtn-term').classList.toggle('hidden', !['Owner', 'Administrator'].includes(role));
-        }
-
-        function openAdminModal(type) {
-            const inputVal = document.getElementById('admin-target-user').value.trim();
-            const matchedAccount = locateUserObject(inputVal);
-            if (!matchedAccount) { alert("Specify a target signature entry."); return; }
-            if (matchedAccount.role === 'Owner') { alert("Action rejected: Target is immune."); return; }
-
-            activeModalType = type;
-            document.getElementById('admin-modal').classList.remove('hidden');
-            document.getElementById('modal-title').textContent = type.toUpperCase() + " Enforcement Protocol";
-            document.getElementById('modal-desc').textContent = `Target: ${matchedAccount.username}`;
-            document.getElementById('modal-ban-length-box').classList.toggle('hidden', type !== 'ban');
-        }
-
-        function closeAdminModal() {
-            document.getElementById('admin-modal').classList.add('hidden');
-            document.getElementById('modal-reason').value = "";
-        }
-
-        function submitAdminAction() {
-            const inputVal = document.getElementById('admin-target-user').value.trim();
-            const matchedAccount = locateUserObject(inputVal);
-            if (!matchedAccount) return;
-
-            const reason = document.getElementById('modal-reason').value.trim() || "Violation Infraction";
-            const note = document.getElementById('modal-note').value.trim() || "No log notes appended.";
-
-            if (activeModalType === 'ban') {
-                let days = parseInt(document.getElementById('modal-ban-days').value) || 1;
-                const expirationEpoch = new Date().getTime() + (days * 24 * 60 * 60 * 1000);
-                activePunishments[matchedAccount.username] = { type: "ban", timestamp: new Date().toLocaleString(), reason: reason, note: note, expires: expirationEpoch };
-            } else if (activeModalType === 'terminate') {
-                activePunishments[matchedAccount.username] = { type: "termination", timestamp: new Date().toLocaleString(), reason: reason, note: note };
-            }
-            saveRegistry(); closeAdminModal(); alert("Enforcement matrix executed.");
-        }
-
-        function applyThemeStyles(themeName) {
-            const root = document.documentElement;
-            if (themeName === 'orange') {
-                root.style.setProperty('--bg-color', '#0d0600'); root.style.setProperty('--panel-color', '#1a0e02'); root.style.setProperty('--border-color', '#2e1803');
-            } else if (themeName === 'black') {
-                root.style.setProperty('--bg-color', '#000000'); root.style.setProperty('--panel-color', '#111111'); root.style.setProperty('--border-color', '#222222');
-            } else if (themeName === 'grey') {
-                root.style.setProperty('--bg-color', '#1c1c1c'); root.style.setProperty('--panel-color', '#2d2d2d'); root.style.setProperty('--border-color', '#3a3a3a');
-            }
-        }
-
-        function saveConfigurationProfile() {
-            const nextUser = document.getElementById('settings-username-input').value.trim();
-            const nextTheme = document.getElementById('settings-theme-select').value;
-
-            if(nextUser && nextUser.toLowerCase() !== sessionData.username.toLowerCase()) {
-                if(locateUserObject(nextUser)) { alert("Moniker collision encountered."); return; }
-                let oldData = userRegistry[sessionData.username];
-                delete userRegistry[sessionData.username];
-                oldData.username = nextUser; userRegistry[nextUser] = oldData; sessionData.username = nextUser;
-            }
-            sessionData.theme = nextTheme;
-            saveRegistry(); saveSessionToStorage(); applyThemeStyles(sessionData.theme); updateGreetingBanner();
-            alert("Settings safely committed."); navigateTo('menu');
-        }
-
-        function openGamePage(gameKey) {
-            const data = gameDatabase[gameKey]; if (!data) return;
-            document.getElementById('game-page-title').textContent = data.title;
-            document.getElementById('game-page-desc').textContent = data.desc;
-            const thumb = document.getElementById('game-page-thumb');
-            thumb.textContent = data.title; thumb.style.background = data.style;
-            navigateTo('game-details');
         }
 
         function navigateTo(targetView) {
+            currentActiveView = targetView;
+            document.getElementById('auth-gateway').classList.add('hidden');
+            document.getElementById('app-canvas').classList.add('hidden');
+            document.getElementById('punishment-screen').classList.add('hidden');
+            document.getElementById('game-client-viewport-container').classList.add('hidden');
+
             document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('view-notifications').classList.add('hidden');
+            document.getElementById('view-game-details').classList.add('hidden');
             document.getElementById('view-menu').classList.add('hidden');
             document.getElementById('view-avatar').classList.add('hidden');
             document.getElementById('view-settings').classList.add('hidden');
             document.getElementById('view-account-info').classList.add('hidden');
-            document.getElementById('view-game-details').classList.add('hidden');
-            document.getElementById('view-notifications').classList.add('hidden');
 
-            if (targetView === 'home') document.getElementById('view-home').classList.remove('hidden');
-            else if (targetView === 'menu') document.getElementById('view-menu').classList.remove('hidden');
-            else if (targetView === 'game-details') document.getElementById('view-game-details').classList.remove('hidden');
-            else if (targetView === 'notifications') {
-                document.getElementById('view-notifications').classList.remove('hidden');
-                rebuildNotificationCenterUI();
-            }
-            else if (targetView === 'avatar') {
-                document.getElementById('view-avatar').classList.remove('hidden');
-                setTimeout(() => { if(renderer) renderer.setSize(document.getElementById('canvas-3d-container').clientWidth, document.getElementById('canvas-3d-container').clientHeight); }, 50);
-            }
-            else if (targetView === 'settings') { document.getElementById('view-settings').classList.remove('hidden'); setupAdminControlVisibility(); }
-            else if (targetView === 'account-info') {
-                document.getElementById('view-account-info').classList.remove('hidden');
-                document.getElementById('info-uid-field').textContent = sessionData.uid;
-                document.getElementById('info-username-field').textContent = sessionData.username;
-                document.getElementById('info-perms-field').textContent = sessionData.role;
-                document.getElementById('info-created-field').textContent = sessionData.created;
-                document.getElementById('info-gender-field').textContent = sessionData.gender;
+            if (targetView === 'auth') {
+                document.getElementById('auth-gateway').classList.remove('hidden');
+            } else if (targetView === 'punish') {
+                document.getElementById('punishment-screen').classList.remove('hidden');
+            } else if (targetView === 'game-live') {
+                document.getElementById('game-client-viewport-container').classList.remove('hidden');
+            } else {
+                document.getElementById('app-canvas').classList.remove('hidden');
+                document.getElementById(`view-${targetView}`).classList.remove('hidden');
+                
+                if (targetView === 'avatar') {
+                    setTimeout(mount3DAvatarCustomizerStage, 50);
+                }
             }
         }
 
-        function executeLogout() { localStorage.removeItem('meow_user_session'); location.reload(); }
+        function switchAuthTab(type) {
+            document.getElementById('toggle-tab-login').classList.toggle('active', type === 'login');
+            document.getElementById('toggle-tab-signup').classList.toggle('active', type === 'signup');
+            document.getElementById('form-login').classList.toggle('hidden', type !== 'login');
+            document.getElementById('form-signup').classList.toggle('hidden', type !== 'signup');
+        }
 
-        function init3D() {
-            const container = document.getElementById('canvas-3d-container'); if(!container) return;
-            scene = new THREE.Scene(); scene.background = new THREE.Color(0x050300);
-            camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100); camera.position.set(0, 0.2, 7);
-            scene.add(new THREE.AmbientLight(0xffffff, 0.75));
-            let dl = new THREE.DirectionalLight(0xffffff, 0.5); dl.position.set(4, 8, 5); scene.add(dl);
-            renderer = new THREE.WebGLRenderer({ antialias: true }); container.appendChild(renderer.domElement);
+        function executeAuth(e, type) {
+            e.preventDefault();
+            if (type === 'login') {
+                const u = document.getElementById('login-user').value.trim();
+                const p = document.getElementById('login-pass').value;
+                const lookupKey = u.toLowerCase();
+
+                if (registeredProfilesDB[lookupKey] && registeredProfilesDB[lookupKey].pass === p) {
+                    const punishment = checkProfilePunishment(u);
+                    if (punishment) return renderPunishmentCardScreen(punishment);
+
+                    activeUserSession = registeredProfilesDB[lookupKey];
+                    sessionStorage.setItem('mb_active_session', lookupKey);
+                    renderActiveApplicationDashboard();
+                } else {
+                    alert("Invalid credential sequences mapped to this node gateway token.");
+                }
+            } else {
+                const u = document.getElementById('signup-user').value.trim();
+                const g = document.getElementById('signup-gender').value;
+                const p = document.getElementById('signup-pass').value;
+                if (!u || !p) return;
+                const lookupKey = u.toLowerCase();
+
+                if (registeredProfilesDB[lookupKey]) return alert("Username key registry conflict.");
+
+                const isOwner = (u.toLowerCase() === 'meowblox');
+                const profile = {
+                    uid: isOwner ? "MB-OWNER" : "MB-" + Math.floor(Math.random() * 90000 + 10000),
+                    user: u, pass: p, perms: isOwner ? "admin" : "player", gender: g,
+                    created: new Date().toLocaleDateString()
+                };
+                registeredProfilesDB[lookupKey] = profile;
+                localStorage.setItem('mb_users_db', JSON.stringify(registeredProfilesDB));
+                activeUserSession = profile;
+                sessionStorage.setItem('mb_active_session', lookupKey);
+                renderActiveApplicationDashboard();
+            }
+        }
+
+        function executeLogout() {
+            activeUserSession = null;
+            sessionStorage.removeItem('mb_active_session');
+            navigateTo('auth');
+        }
+
+        function renderActiveApplicationDashboard() {
+            document.getElementById('welcome-banner').innerText = `Welcome, ${activeUserSession.user}`;
+            
+            // Explicitly assert true to display modules if current runtime user context is "MeowBlox"
+            const isOwner = (activeUserSession.user.toLowerCase() === 'meowblox');
+            const isAdmin = isOwner || activeUserSession.perms === 'admin' || activeUserSession.perms === 'mod';
+            
+            document.getElementById('home-admin-badge').classList.toggle('hidden', !isAdmin);
+            document.getElementById('admin-control-panel').classList.toggle('hidden', !isAdmin);
+            
+            if (isAdmin) {
+                document.getElementById('abtn-mod').classList.toggle('hidden', !isOwner && activeUserSession.perms !== 'admin');
+                document.getElementById('abtn-admin').classList.toggle('hidden', !isOwner && activeUserSession.perms !== 'admin');
+                document.getElementById('abtn-warn').classList.remove('hidden');
+                document.getElementById('abtn-ban').classList.remove('hidden');
+                document.getElementById('abtn-term').classList.toggle('hidden', !isOwner && activeUserSession.perms !== 'admin');
+            }
+
+            document.getElementById('info-uid-field').innerText = activeUserSession.uid;
+            document.getElementById('info-username-field').innerText = activeUserSession.user;
+            document.getElementById('info-perms-field').innerText = isOwner ? "OWNER / DEVELOPER" : activeUserSession.perms.toUpperCase();
+            document.getElementById('info-created-field').innerText = activeUserSession.created;
+            document.getElementById('info-gender-field').innerText = activeUserSession.gender;
+            document.getElementById('settings-username-input').value = activeUserSession.user;
+
+            navigateTo('home');
+        }
+
+        function openGamePage(key) {
+            selectedViewedGameKey = key;
+            const data = defaultGamesRegistry[key];
+            document.getElementById('game-page-title').innerText = data.title;
+            document.getElementById('game-page-ccu').innerText = data.ccu;
+            document.getElementById('game-page-visits').innerText = data.visits;
+            document.getElementById('game-page-desc').innerText = data.desc;
+            
+            const thumb = document.getElementById('game-page-thumb');
+            if(key === 'adopt') thumb.style.background = "linear-gradient(135deg, #ff9f43, #ff5252)";
+            else thumb.style.background = "linear-gradient(135deg, #74b9ff, #0984e3)";
+            thumb.innerText = data.title;
+
+            navigateTo('game-details');
+        }
+
+        function launchGameEngineInstance() {
+            if (selectedViewedGameKey === 'adopt') {
+                navigateTo('game-live');
+
+                const liveIframe = document.getElementById('embedded-game-frame-runtime');
+                const threeCanvas = document.getElementById('client-three-canvas');
+
+                threeCanvas.classList.add('hidden');
+                liveIframe.classList.remove('hidden');
+
+                // FIXED HTML RAW HEADER BYPASS STREAM PIPELINE VIA JSDELIVR
+                liveIframe.src = "https://cdn.jsdelivr.net/gh/fxrncloudxzii-cmyk/MeowBlox@main/AdoptMe.html";
+                
+                const chatLog = document.getElementById('client-chat-log');
+                chatLog.innerHTML = `<div class="client-chat-row-msg" style="color:var(--accent-color);">🚀 Loaded Adaptive Server Stream Frame successfully. Enjoy Adopt Me!</div>`;
+            } else {
+                navigateTo('game-live');
+                document.getElementById('embedded-game-frame-runtime').classList.add('hidden');
+                document.getElementById('client-three-canvas').classList.remove('hidden');
+                setTimeout(bootNative3DGameSimulationClient, 50);
+            }
+        }
+
+        function setupInterFramePostMessageEngine() {
+            window.addEventListener('message', (event) => {
+                const inboundDataPacket = event.data;
+                if (!inboundDataPacket || typeof inboundDataPacket !== 'object') return;
+
+                switch(inboundDataPacket.type) {
+                    case 'GAME_EXIT_REQUESTED':
+                        terminateActiveClientGame();
+                        break;
+                }
+            });
+        }
+
+        function terminateActiveClientGame() {
+            toggleClientEscapeMenu(false);
+            if (clientAnimationId) cancelAnimationFrame(clientAnimationId);
+            
+            const liveIframe = document.getElementById('embedded-game-frame-runtime');
+            liveIframe.src = "";
+            liveIframe.classList.add('hidden');
+            
+            document.getElementById('game-client-viewport-container').classList.add('hidden');
+            document.getElementById('client-bubble-container-layer').innerHTML = "";
+            navigateTo('home');
+        }
+
+        function saveConfigurationProfile() {
+            const newName = document.getElementById('settings-username-input').value.trim();
+            if(!newName) return;
+            const newLookupKey = newName.toLowerCase();
+            const oldLookupKey = activeUserSession.user.toLowerCase();
+
+            if(newName !== activeUserSession.user && registeredProfilesDB[newLookupKey]) {
+                return alert("That username token parameter already claims active workspace links.");
+            }
+
+            activeUserSession.user = newName;
+            registeredProfilesDB[newLookupKey] = activeUserSession;
+            if(oldLookupKey !== newLookupKey) delete registeredProfilesDB[oldLookupKey];
+            
+            localStorage.setItem('mb_users_db', JSON.stringify(registeredProfilesDB));
+            sessionStorage.setItem('mb_active_session', newLookupKey);
+            renderActiveApplicationDashboard();
+            alert("Workspace configurations recorded securely.");
+        }
+
+        function checkProfilePunishment(username) {
+            const records = activePunishmentsDB[username.toLowerCase()];
+            if (!records) return null;
+            if (records.type === 'ban') {
+                const expiry = new Date(records.expiry);
+                if (new Date() > expiry) {
+                    delete activePunishmentsDB[username.toLowerCase()];
+                    localStorage.setItem('mb_punishments_db', JSON.stringify(activePunishmentsDB));
+                    return null;
+                }
+            }
+            return records;
+        }
+
+        function renderPunishmentCardScreen(punishment) {
+            document.getElementById('p-type').innerText = punishment.type.toUpperCase();
+            document.getElementById('p-time').innerText = punishment.time;
+            document.getElementById('p-reason').innerText = punishment.reason;
+            document.getElementById('p-note').innerText = punishment.note || "None";
+            navigateTo('punish');
+        }
+
+        let adminCurrentModeType = null;
+        function openAdminModal(type) {
+            adminCurrentModeType = type;
+            document.getElementById('admin-modal').classList.remove('hidden');
+            document.getElementById('modal-title').innerText = `Issue Active ${type.toUpperCase()}`;
+            document.getElementById('modal-ban-length-box').classList.toggle('hidden', type !== 'ban');
+        }
+        function closeAdminModal() { document.getElementById('admin-modal').classList.add('hidden'); }
+
+        function triggerImmediateAction(action) {
+            const target = document.getElementById('admin-target-user').value.trim().toLowerCase();
+            if(!target || !registeredProfilesDB[target]) return alert("Target profile node tracking missing.");
+            
+            if (action === 'give-mod') registeredProfilesDB[target].perms = 'mod';
+            if (action === 'give-admin') registeredProfilesDB[target].perms = 'admin';
+            
+            localStorage.setItem('mb_users_db', JSON.stringify(registeredProfilesDB));
+            alert(`Privilege clearance tier update passed to: ${registeredProfilesDB[target].user}`);
+        }
+
+        function submitAdminAction() {
+            const target = document.getElementById('admin-target-user').value.trim().toLowerCase();
+            const reason = document.getElementById('modal-reason').value.trim();
+            const note = document.getElementById('modal-note').value.trim();
+            
+            if(!target || !registeredProfilesDB[target]) return alert("Profile mismatch.");
+            if(!reason) return alert("Violation classification reasoning required.");
+
+            const entry = {
+                type: adminCurrentModeType,
+                reason: reason, note: note,
+                time: new Date().toLocaleString()
+            };
+
+            if (adminCurrentModeType === 'ban') {
+                const days = parseInt(document.getElementById('modal-ban-days').value) || 1;
+                let exp = new Date(); exp.setDate(exp.getDate() + days);
+                entry.expiry = exp.toISOString();
+            }
+
+            if(adminCurrentModeType === 'terminate') entry.type = 'terminated';
+
+            activePunishmentsDB[target] = entry;
+            localStorage.setItem('mb_punishments_db', JSON.stringify(activePunishmentsDB));
+            
+            closeAdminModal();
+            alert(`Security moderation policy applied onto target profile record.`);
+        }
+
+        function handleSearchTyping(val) {
+            const box = document.getElementById('search-suggestions');
+            if(!val.trim()) { box.classList.add('hidden'); return; }
+            box.classList.remove('hidden');
+
+            let html = "";
+            let games = Object.keys(defaultGamesRegistry).filter(k => defaultGamesRegistry[k].title.toLowerCase().includes(val.toLowerCase()));
+            let users = Object.keys(registeredProfilesDB).filter(u => u.toLowerCase().includes(val.toLowerCase()));
+
+            if(games.length > 0) {
+                html += `<div style="padding:8px 15px; font-size:11px; color:#666; background:#110a02;">Suggested Experiences</div>`;
+                games.forEach(g => {
+                    html += `<div class="suggestion-item" onmousedown="openGamePage('${g}')"><div class="suggestion-category">GAME REGISTRY</div><div>${defaultGamesRegistry[g].title}</div></div>`;
+                });
+            }
+            if(users.length > 0) {
+                html += `<div style="padding:8px 15px; font-size:11px; color:#666; background:#110a02;">Registered Accounts</div>`;
+                users.forEach(u => {
+                    html += `<div class="suggestion-item" onmousedown="injectProfileDumpCard('${u}')"><div class="suggestion-category">USER DATABANK</div><div>${registeredProfilesDB[u].user} (@${registeredProfilesDB[u].uid})</div></div>`;
+                });
+            }
+
+            if(!html) html = `<div style="padding:15px; font-size:13px; color:#666;">No mapped suggestions tracking query strings.</div>`;
+            box.innerHTML = html;
+        }
+
+        function handleSearchKeyDown(e, val) {
+            if (e.key === 'Enter' && val.trim()) {
+                document.getElementById('search-routing-modal').classList.remove('hidden');
+                document.getElementById('modal-routing-query-text').innerText = val;
+            }
+        }
+        function handleSearchBlur() { setTimeout(() => { document.getElementById('search-suggestions').classList.add('hidden'); }, 180); }
+        function closeRoutingModal() { document.getElementById('search-routing-modal').classList.add('hidden'); }
+
+        function triggerRoutedSearch(engineType) {
+            const val = document.getElementById('global-search-input').value.trim();
+            closeRoutingModal();
+            document.getElementById('explorer-output-section').classList.remove('hidden');
+            
+            const dumpBox = document.getElementById('explorer-data-dump');
+            if (engineType === 'game') {
+                let matches = Object.keys(defaultGamesRegistry).filter(k => defaultGamesRegistry[k].title.toLowerCase().includes(val.toLowerCase()));
+                if(matches.length === 0) { dumpBox.innerHTML = `<p style="color:#777;">Zero matching context entries inside experience indexes.</p>`; return; }
+                let html = "";
+                matches.forEach(m => {
+                    html += `<div class="info-row" style="cursor:pointer;" onclick="openGamePage('${m}')">
+                        <span style="color:var(--accent-color); font-weight:bold;">🎮 ${defaultGamesRegistry[m].title}</span><span>Visits: ${defaultGamesRegistry[m].visits}</span>
+                    </div>`;
+                });
+                dumpBox.innerHTML = html;
+            } else {
+                let matches = Object.keys(registeredProfilesDB).filter(u => u.toLowerCase().includes(val.toLowerCase()));
+                if(matches.length === 0) { dumpBox.innerHTML = `<p style="color:#777;">Zero matching context entries inside user index arrays.</p>`; return; }
+                let html = "";
+                matches.forEach(m => {
+                    html += `<div class="info-row" style="cursor:pointer;" onclick="injectProfileDumpCard('${m}')">
+                        <span style="color:#3498db; font-weight:bold;">👤 ${registeredProfilesDB[m].user}</span><span>ID Node Reference: ${registeredProfilesDB[m].uid}</span>
+                    </div>`;
+                });
+                dumpBox.innerHTML = html;
+            }
+        }
+
+        function injectProfileDumpCard(username) {
+            document.getElementById('explorer-output-section').classList.remove('hidden');
+            const data = registeredProfilesDB[username.toLowerCase()];
+            const dumpBox = document.getElementById('explorer-data-dump');
+            if (!data) { dumpBox.innerHTML = `<p style="color:red;">Failed network query extraction lookup block.</p>`; return; }
+            
+            dumpBox.innerHTML = `
+                <div style="background:rgba(0,0,0,0.2); padding:15px; border-radius:6px; border:1px solid var(--border-color);">
+                    <h4 style="color:#3498db; margin-bottom:10px; font-size:16px;">System User Matrix Entry: ${data.user}</h4>
+                    <p style="font-size:13px; margin:4px 0;"><strong>Account UID Hash:</strong> ${data.uid}</p>
+                    <p style="font-size:13px; margin:4px 0;"><strong>Clearance Status Node:</strong> <span style="color:#2ecc71;">${data.perms.toUpperCase()}</span></p>
+                    <p style="font-size:13px; margin:4px 0;"><strong>Profile Link Timestamp:</strong> ${data.created}</p>
+                    <button class="admin-btn" style="margin-top:10px; font-size:11px; padding:6px 12px; background:#3498db;" onclick="document.getElementById('admin-target-user').value='${data.user}'; navigateTo('settings');">Load Into Admin Target Box</button>
+                </div>
+            `;
+        }
+
+        function clearExplorerOutputSection() { document.getElementById('explorer-output-section').classList.add('hidden'); }
+
+        function bootNative3DGameSimulationClient() {
+            const container = document.getElementById('client-three-canvas');
+            container.innerHTML = "";
+            
+            clientScene = new THREE.Scene();
+            clientScene.background = new THREE.Color(0x020100);
+
+            clientCamera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
+            clientCamera.position.set(0, 5, 12);
+
+            clientRenderer = new THREE.WebGLRenderer({ antialias: true });
+            clientRenderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(clientRenderer.domElement);
+
+            clientScene.add(new THREE.AmbientLight(0xffffff, 0.6));
+            let light = new THREE.DirectionalLight(0xffffff, 0.6);
+            light.position.set(10, 20, 15); clientScene.add(light);
+
+            let grid = new THREE.GridHelper(50, 50, 0xff941a, 0x1d1103);
+            grid.position.y = -0.01; clientScene.add(grid);
+
+            let skinColor = document.getElementById('customizer-skin-select').value || "#ffdbac";
+            let boxGeo = new THREE.BoxGeometry(2, 4, 2);
+            let boxMat = new THREE.MeshLambertMaterial({ color: new THREE.Color(skinColor) });
+            playerBoxMesh = new THREE.Mesh(boxGeo, boxMat);
+            playerBoxMesh.position.y = 2;
+            clientScene.add(playerBoxMesh);
+
+            clientCamera.lookAt(playerBoxMesh.position);
+
+            clientChatHistory = ["⚙️ Connection link established with simulator server loop structure."];
+            syncClientChatDOMStream();
+
+            runNativeSimulationClientLoop();
+        }
+
+        function runNativeSimulationClientLoop() {
+            clientAnimationId = requestAnimationFrame(runNativeSimulationClientLoop);
+            const time = Date.now() * 0.001;
+            
+            if (playerBoxMesh) {
+                if (activeEmoteKey === 'macarena') {
+                    playerBoxMesh.position.y = 2 + Math.abs(Math.sin(time * 5)) * 0.5;
+                    playerBoxMesh.rotation.y = time * 4;
+                } else if (activeEmoteKey === 'take-l') {
+                    playerBoxMesh.rotation.z = Math.sin(time * 6) * 0.2;
+                } else {
+                    playerBoxMesh.position.y = 2;
+                    playerBoxMesh.rotation.set(0,0,0);
+                }
+            }
+
+            if(clientRenderer && clientScene && clientCamera) {
+                clientRenderer.render(clientScene, clientCamera);
+            }
+            updateChatBubblesScreenBillboardProjection();
+        }
+
+        function dispatchClientChatMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('client-chat-field');
+            let txt = input.value.trim(); if (!txt) return; input.value = "";
+            
+            clientChatHistory.push(`<strong>${activeUserSession.user}:</strong> ${txt}`);
+            syncClientChatDOMStream();
+
+            triggerBillboardFloatingChatBubble(txt);
+        }
+
+        function syncClientChatDOMStream() {
+            const logBox = document.getElementById('client-chat-log');
+            logBox.innerHTML = clientChatHistory.map(m => `<div class="client-chat-row-msg">${m}</div>`).join('');
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        function triggerBillboardFloatingChatBubble(text) {
+            const container = document.getElementById('client-bubble-container-layer');
+            container.innerHTML = `<div id="live-active-bubble-node" class="bubble-chat-billboard">${text}</div>`;
+            emoteTimer = Date.now() + 4000; 
+        }
+
+        function updateChatBubblesScreenBillboardProjection() {
+            const bubble = document.getElementById('live-active-bubble-node');
+            if (!bubble) return;
+            if (Date.now() > emoteTimer) { bubble.remove(); return; }
+
+            const container = document.getElementById('client-three-canvas');
+            if(!container) return;
+            
+            bubble.style.left = (container.clientWidth / 2) + "px";
+            bubble.style.top = (container.clientHeight / 2 - 60) + "px";
+        }
+
+        function toggleClientEmoteWheel(show) {
+            document.getElementById('client-emote-wheel-overlay').classList.toggle('hidden', !show);
+        }
+
+        function executeSelectedEmote(key) {
+            toggleClientEmoteWheel(false);
+            activeEmoteKey = key;
+            currentClientActiveEmote = "me";
+            emoteTimer = 0;
+            
+            const logBox = document.getElementById('client-chat-log');
+            logBox.innerHTML += `<div class="client-chat-row-msg" style="color:#9b59b6; font-style:italic;">🎭 You started running emote sequence: ${key.toUpperCase()}</div>`;
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        function toggleClientEscapeMenu(show) {
+            document.getElementById('client-esc-overlay').classList.toggle('hidden', !show);
+        }
+
+        function mount3DAvatarCustomizerStage() {
+            const box = document.getElementById('canvas-3d-container');
+            if(!box || box.clientWidth === 0) return;
+            box.innerHTML = "";
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x050300);
+
+            camera = new THREE.PerspectiveCamera(45, box.clientWidth / box.clientHeight, 0.1, 100);
+            camera.position.set(0, 4, 9);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(box.clientWidth, box.clientHeight);
+            box.appendChild(renderer.domElement);
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+            let dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            dirLight.position.set(5, 10, 5); scene.add(dirLight);
 
             characterGroup = new THREE.Group();
-            let skinMat = new THREE.MeshLambertMaterial({ color: 0xffdbac }), shirtMat = new THREE.MeshLambertMaterial({ color: 0xff941a }), pantsMat = new THREE.MeshLambertMaterial({ color: 0x1e3799 });
-            let headGeo = new THREE.BoxGeometry(0.8, 0.8, 0.8), torsoGeo = new THREE.BoxGeometry(1.0, 1.6, 0.5), limbGeo = new THREE.BoxGeometry(0.45, 1.5, 0.45);
+            
+            let headGeo = new THREE.BoxGeometry(1.2, 1.2, 1.2);
+            let skinHex = document.getElementById('customizer-skin-select').value;
+            let headMat = new THREE.MeshLambertMaterial({ color: skinHex });
+            headMesh = new THREE.Mesh(headGeo, headMat);
+            headMesh.position.y = 3.1; characterGroup.add(headMesh);
 
-            headMesh = new THREE.Mesh(headGeo, skinMat); headMesh.position.y = 1.3; characterGroup.add(headMesh);
-            torsoMesh = new THREE.Mesh(torsoGeo, shirtMat); torsoMesh.position.y = 0.1; characterGroup.add(torsoMesh);
-            leftArm = new THREE.Mesh(limbGeo, skinMat); leftArm.position.set(-0.75, 0.1, 0); characterGroup.add(leftArm);
-            rightArm = new THREE.Mesh(limbGeo, skinMat); rightArm.position.set(0.75, 0.1, 0); characterGroup.add(rightArm);
-            leftLeg = new THREE.Mesh(limbGeo, pantsMat); leftLeg.position.set(-0.26, -1.45, 0); characterGroup.add(leftLeg);
-            rightLeg = new THREE.Mesh(limbGeo, pantsMat); rightLeg.position.set(0.26, -1.45, 0); characterGroup.add(rightLeg);
-            characterGroup.position.y = 0.2; scene.add(characterGroup);
+            let shirtHex = document.getElementById('customizer-shirt-select').value;
+            let torsoGeo = new THREE.BoxGeometry(1.8, 2.0, 1.0);
+            let torsoMat = new THREE.MeshLambertMaterial({ color: shirtHex });
+            torsoMesh = new THREE.Mesh(torsoGeo, torsoMat);
+            torsoMesh.position.y = 1.5; characterGroup.add(torsoMesh);
 
-            function animate() { requestAnimationFrame(animate); characterGroup.rotation.y += 0.015; renderer.render(scene, camera); }
-            animate();
+            let armGeo = new THREE.BoxGeometry(0.7, 2.0, 0.8);
+            leftArm = new THREE.Mesh(armGeo, headMat); leftArm.position.set(-1.3, 1.5, 0); characterGroup.add(leftArm);
+            rightArm = new THREE.Mesh(armGeo, headMat); rightArm.position.set(1.3, 1.5, 0); characterGroup.add(rightArm);
+
+            let pantsHex = document.getElementById('customizer-pants-select').value;
+            let legGeo = new THREE.BoxGeometry(0.8, 1.8, 0.9);
+            let legMat = new THREE.MeshLambertMaterial({ color: pantsHex });
+            leftLeg = new THREE.Mesh(legGeo, legMat); leftLeg.position.set(-0.45, -0.4, 0); characterGroup.add(leftLeg);
+            rightLeg = new THREE.Mesh(legGeo, legMat); rightLeg.position.set(0.45, -0.4, 0); characterGroup.add(rightLeg);
+
+            characterGroup.position.y = 0.5;
+            scene.add(characterGroup);
+            camera.lookAt(0, 1.8, 0);
+
+            function animateAvatarCustomizerLoop() {
+                if (currentActiveView !== 'avatar') return;
+                requestAnimationFrame(animateAvatarCustomizerLoop);
+                characterGroup.rotation.y += 0.015;
+                renderer.render(scene, camera);
+            }
+            animateAvatarCustomizerLoop();
         }
 
-        function update3DColor(layer, hexString) {
-            const tc = new THREE.Color(hexString);
-            if (layer === 'skin') { headMesh.material.color = tc; leftArm.material.color = tc; rightArm.material.color = tc; }
-            else if (layer === 'shirt') torsoMesh.material.color = tc;
-            else if (layer === 'pants') { leftLeg.material.color = tc; rightLeg.material.color = tc; }
+        function update3DColor(part, hex) {
+            if (part === 'skin') {
+                if(headMesh) headMesh.material.color.set(hex);
+                if(leftArm) leftArm.material.color.set(hex);
+                if(rightArm) rightArm.material.color.set(hex);
+            } else if (part === 'shirt') {
+                if(torsoMesh) torsoMesh.material.color.set(hex);
+            } else if (part === 'pants') {
+                if(leftLeg) leftLeg.material.color.set(hex);
+                if(rightLeg) rightLeg.material.color.set(hex);
+            }
         }
+
+        window.addEventListener('resize', () => {
+            if (clientRenderer && clientCamera) {
+                const container = document.getElementById('client-three-canvas');
+                if (container && container.clientWidth > 0) {
+                    clientCamera.aspect = container.clientWidth / container.clientHeight;
+                    clientCamera.updateProjectionMatrix();
+                    clientRenderer.setSize(container.clientWidth, container.clientHeight);
+                }
+            }
+        });
     </script>
 </body>
 </html>
