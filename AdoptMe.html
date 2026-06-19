@@ -3,442 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeowBlox - Adopt Me! Sub-Module</title>
+    <title>Adopt Me! Core Grid Environment</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        :root { --panel-color: #fffaee; --border-color: #ffdca3; --accent-color: #ff9f43; --text-dark: #2c3e50; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background-color: #a5e2ff; color: var(--text-dark); }
-        #game-viewport { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
-        
-        .game-hud-container { position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; }
-        .hud-card { background: rgba(255, 255, 255, 0.95); border: 3px solid var(--border-color); padding: 10px 20px; border-radius: 20px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; pointer-events: auto; }
-        .currency-display { font-size: 18px; color: #2ecc71; }
-        .zone-display { font-size: 14px; text-transform: uppercase; color: var(--accent-color); }
-
-        .pet-status-panel { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); background: rgba(255, 255, 255, 0.95); border: 3px solid #ff7675; padding: 15px 30px; border-radius: 25px; box-shadow: 0 6px 15px rgba(0,0,0,0.15); z-index: 10; text-align: center; width: 320px; }
-        .progress-bar-bg { width: 100%; height: 16px; background: #eee; border-radius: 10px; overflow: hidden; margin-top: 8px; border: 1px solid #ddd; }
-        .progress-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #ff7675, #ff9f43); transition: width 0.4s ease; }
-
-        .active-need-banner { position: absolute; top: 85px; left: 50%; transform: translateX(-50%); background: #ff7675; color: white; padding: 10px 25px; border-radius: 30px; font-weight: bold; font-size: 15px; box-shadow: 0 4px 12px rgba(255,118,117,0.4); z-index: 10; animation: bounce 2s infinite; }
-
-        .right-action-stack { position: absolute; right: 20px; top: 85px; display: flex; flex-direction: column; gap: 12px; z-index: 10; }
-        .action-circle-btn { width: 65px; height: 65px; border-radius: 50%; background: var(--panel-color); border: 3px solid var(--border-color); box-shadow: 0 4px 8px rgba(0,0,0,0.1); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; transition: transform 0.1s; }
-        .action-circle-btn:active { transform: scale(0.9); }
-        .action-btn-label { font-size: 10px; font-weight: 800; text-transform: uppercase; margin-top: -2px; }
-
-        .game-modal-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 100; }
-        .game-card-window { background: var(--panel-color); border: 4px solid var(--border-color); border-radius: 20px; padding: 30px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .modal-headline { font-size: 24px; color: var(--accent-color); margin-bottom: 10px; }
-        .modal-body-text { font-size: 14px; margin-bottom: 20px; line-height: 1.5; color: #57606f; }
-        .modal-action-btn { background: var(--accent-color); color: white; border: none; padding: 12px 24px; font-weight: bold; font-size: 16px; border-radius: 12px; cursor: pointer; width: 100%; }
-        
-        .hidden { display: none !important; }
-        @keyframes bounce { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -8px); } }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #b3e5fc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+        #game-canvas {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+        }
+        .game-hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(13, 6, 0, 0.85);
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: #fff;
+            backdrop-filter: blur(8px);
+            border: 2px solid #ff941a;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            pointer-events: none;
+        }
+        .game-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff941a;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
 
-    <div id="game-viewport"></div>
-
-    <div class="game-hud-container">
-        <div class="hud-card">
-            <span style="font-size: 20px;">🏡</span>
-            <span id="current-zone-tag" class="zone-display">Your Home Tiny Studio</span>
-        </div>
-        <div class="hud-card">
-            <span style="font-size: 20px; color: #2ecc71;">💰</span>
-            <span id="cash-counter" class="currency-display">$150</span>
-        </div>
+    <div class="game-hud">
+        <div class="game-title">🏡 Adopt Me! Core Stream</div>
+        <div id="hud-user-label" style="font-size:12px; color:#ccc; margin-top:4px;">Loading Profile Engine...</div>
     </div>
 
-    <div id="need-alert-banner" class="active-need-banner hidden">
-        ⚠️ Pet Need: Walk over to the <span id="need-target-name" style="text-decoration: underline;">Bed Station</span>!
-    </div>
-
-    <div id="pet-tracker-hud" class="pet-status-panel hidden">
-        <div id="pet-tracker-title" style="font-weight: bold; font-size: 14px;">🥚 Starter Egg Module</div>
-        <div id="pet-tracker-status" style="font-size: 12px; color: #777;">Fulfill interactive tasks to hatch</div>
-        <div class="progress-bar-bg"><div id="pet-maturity-fill" class="progress-bar-fill"></div></div>
-    </div>
-
-    <div class="right-action-stack">
-        <button class="action-circle-btn" onclick="triggerPurchaseEgg()">
-            <span>🥚</span>
-            <div class="action-btn-label">Buy Egg</div>
-        </button>
-        <button id="trade-btn" class="action-circle-btn hidden" onclick="openTradingSimulatorWindow()">
-            <span>🔄</span>
-            <div class="action-btn-label">Trade</div>
-        </button>
-        <button class="action-circle-btn" style="border-color: #ff7675;" onclick="triggerEjectToLauncher()">
-            <span>🚪</span>
-            <div class="action-btn-label">Leave</div>
-        </button>
-    </div>
-
-    <div id="tutorial-modal" class="game-modal-layer">
-        <div class="game-card-window">
-            <h2 class="modal-headline">✨ Welcome to Adopt Me!</h2>
-            <p class="modal-body-text">Welcome to your tiny home! Use the <strong>WASD keys</strong> to explore. Walk through the blue door portal to enter the neighborhood square!</p>
-            <button class="modal-action-btn" onclick="closeTutorialOverlay()">Start Exploring</button>
-        </div>
-    </div>
-
-    <div id="trade-modal" class="game-modal-layer hidden">
-        <div class="game-card-window">
-            <h2 class="modal-headline">🤝 Incoming Trade Proposal</h2>
-            <p class="modal-body-text"><strong>Player `KittyPlayer`</strong> offers a rare ultra-neon mythical pet in exchange for your active hatched asset model!</p>
-            <div style="background: rgba(0,0,0,0.05); padding: 12px; border-radius: 8px; font-size: 13px; font-weight: bold; margin-bottom: 20px;">
-                Incoming: 🦄 Neon Unicorn<br>Outgoing: <span id="trade-outgoing-name">Your Pet</span>
-            </div>
-            <div style="display: flex; gap: 10px;">
-                <button class="modal-action-btn" style="background: #2ecc71;" onclick="finalizeTradeAgreement(true)">Accept Trade</button>
-                <button class="modal-action-btn" style="background: #e74c3c;" onclick="finalizeTradeAgreement(false)">Decline</button>
-            </div>
-        </div>
-    </div>
+    <div id="game-canvas"></div>
 
     <script>
-        let scene, camera, renderer, clock, runtimeFrameId;
-        let localUserGroup, activePetGroup;
-        let currentEnvironmentZone = "house"; 
-        let currentAccountCashBalance = 150;
-        let petStateProfile = { ownEgg: false, hatched: false, type: "none", tasksCompleted: 0, requiredTasks: 3 };
-        let activeTargetNeedNode = null; 
-        let runningActiveEmoteKey = null;
+        let scene, camera, renderer, houseGroup, playerGroup;
+        let headMesh, torsoMesh, leftArm, rightArm, leftLeg, rightLeg;
 
-        const activeControlsMatrix = { w: false, a: false, s: false, d: false };
-        const engineVelocityModifier = 4.5;
-        let mapStationObjects = [];
-        let houseDoorPortalBoundary, neighborhoodReturnPortal;
+        // 🟢 THE CORE MATRIX FIX: Default fallbacks that instantly overwrite from your actual active profile database
+        let avatarColors = {
+            skin: "#f1c27d",
+            shirt: "#ff941a",
+            pants: "#1e3799"
+        };
+        let currentSessionUsername = "Player";
 
-        window.addEventListener('DOMContentLoaded', () => {
-            initialize3DAdoptMeEngine();
-            hookKeyboardInputEngines();
-            setupCoreSystemListener();
-        });
-
-        // --- 📡 CORE SYSTEM CROSS-COMMUNICATION BRIDGE ---
-        function setupCoreSystemListener() {
-            window.addEventListener('message', (event) => {
-                const packet = event.data;
-                if (!packet || typeof packet !== 'object') return;
-
-                // 1. Process chat messages generated from Core.html
-                if (packet.type === 'CORE_CHAT_DISPATCHED') {
-                    console.log("AdoptMe caught chat from core:", packet.message);
-                }
+        function pullActiveCoreSystemProfile() {
+            try {
+                const activeSession = sessionStorage.getItem('mb_active_session');
+                const usersDB = JSON.parse(localStorage.getItem('mb_users_db')) || {};
                 
-                // 2. Process Emotes activated from Core.html Emote Wheel
-                if (packet.type === 'CORE_EMOTE_TRIGGERED') {
-                    runningActiveEmoteKey = packet.emoteKey;
-                    console.log("Playing animation mapped to Core Emote Matrix:", runningActiveEmoteKey);
+                if (activeSession && usersDB[activeSession.toLowerCase()]) {
+                    const profile = usersDB[activeSession.toLowerCase()];
+                    currentSessionUsername = profile.user || "Player";
+                    
+                    // Pull the custom colors saved by your avatar customizer screen
+                    if (profile.avatar) {
+                        avatarColors.skin = profile.avatar.skin || avatarColors.skin;
+                        avatarColors.shirt = profile.avatar.shirt || avatarColors.shirt;
+                        avatarColors.pants = profile.avatar.pants || avatarColors.pants;
+                    }
+                    document.getElementById('hud-user-label').innerText = `Active User: ${currentSessionUsername}`;
+                } else {
+                    document.getElementById('hud-user-label').innerText = `Active User: Guest Mode`;
                 }
-            });
-        }
-
-        function notifyCoreSystem(eventType, dataPayload) {
-            // Sends data updates back up to Core.html (e.g., wallet updates or leaving events)
-            if (window.parent && window.parent !== window) {
-                window.parent.postMessage({ type: eventType, data: dataPayload }, "*");
+            } catch (err) {
+                console.log("Core system storage hook state offline, using defaults.");
             }
         }
 
-        function initialize3DAdoptMeEngine() {
-            const renderCanvas = document.getElementById('game-viewport');
+        function initGameWorld() {
+            // First read what your system customized
+            pullActiveCoreSystemProfile();
+
+            const container = document.getElementById('game-canvas');
+
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0xa5e2ff);
-            
-            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 5, 11);
-            camera.lookAt(0, 0.5, 0);
+            scene.background = new THREE.Color(0xb3e5fc);
+            scene.fog = new THREE.FogExp2(0xb3e5fc, 0.015);
+
+            camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 7, 16);
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderCanvas.appendChild(renderer.domElement);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
 
-            clock = new THREE.Clock();
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambientLight);
 
-            scene.add(new THREE.AmbientLight(0xffffff, 0.85));
-            let trackingSun = new THREE.DirectionalLight(0xfffaed, 0.4);
-            trackingSun.position.set(12, 18, 10);
-            scene.add(trackingSun);
+            const mainSun = new THREE.DirectionalLight(0xfffdf2, 0.9);
+            mainSun.position.set(15, 30, 15);
+            mainSun.castShadow = true;
+            mainSun.shadow.mapSize.width = 2048;
+            mainSun.shadow.mapSize.height = 2048;
+            scene.add(mainSun);
 
-            localUserGroup = assembleAdopterBlockEntity("#ffdbac", "#ff9f43", "#2c3e50");
-            localUserGroup.position.set(0, 0, 2);
-            scene.add(localUserGroup);
+            // Ground/Grass Base
+            const groundGeo = new THREE.PlaneGeometry(120, 120);
+            const groundMat = new THREE.MeshStandardMaterial({ color: 0x4caf50, roughness: 0.9 });
+            const ground = new THREE.Mesh(groundGeo, groundMat);
+            ground.rotation.x = -Math.PI / 2;
+            ground.receiveShadow = true;
+            scene.add(ground);
 
-            loadZoneSceneLayout();
-            executeGameTickPipeline();
+            // 🏡 PREMIUM MODULAR SPECIFICITY HOUSE BUILD
+            houseGroup = new THREE.Group();
+
+            // Main Core Foundation Structure
+            const wallGeo = new THREE.BoxGeometry(8, 5.5, 6.5);
+            const wallMat = new THREE.MeshStandardMaterial({ color: 0xfff9c4, roughness: 0.6 }); 
+            const mainWalls = new THREE.Mesh(wallGeo, wallMat);
+            mainWalls.position.y = 2.75;
+            mainWalls.castShadow = true;
+            mainWalls.receiveShadow = true;
+            houseGroup.add(mainWalls);
+
+            // Clean Overhead Wedge Roof Profile
+            const roofShape = new THREE.Shape();
+            roofShape.moveTo(-4.5, 0);
+            roofShape.lineTo(0, 3);
+            roofShape.lineTo(4.5, 0);
+            roofShape.lineTo(-4.5, 0);
+
+            const extrudeOpts = { depth: 7, bevelEnabled: true, bevelSize: 0.05, bevelThickness: 0.05, steps: 1 };
+            const roofGeo = new THREE.ExtrudeGeometry(roofShape, extrudeOpts);
+            const roofMat = new THREE.MeshStandardMaterial({ color: 0xe57373, roughness: 0.4 });
+            const roofMesh = new THREE.Mesh(roofGeo, roofMat);
+            roofMesh.position.set(0, 5.5, -3.5); 
+            roofMesh.castShadow = true;
+            houseGroup.add(roofMesh);
+
+            // Intricate Panelled Modern Door Structure
+            const doorFrameGeo = new THREE.BoxGeometry(1.6, 2.6, 0.15);
+            const doorFrameMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
+            const doorFrame = new THREE.Mesh(doorFrameGeo, doorFrameMat);
+            doorFrame.position.set(0, 1.3, 3.26);
+            houseGroup.add(doorFrame);
+
+            const doorGeo = new THREE.BoxGeometry(1.3, 2.4, 0.1);
+            const doorMat = new THREE.MeshStandardMaterial({ color: 0x42a5f5, roughness: 0.4 });
+            const door = new THREE.Mesh(doorGeo, doorMat);
+            door.position.set(0, 1.2, 3.3);
+            houseGroup.add(door);
+
+            // Windows Layout (Left side and Right side frames)
+            const winOuterGeo = new THREE.BoxGeometry(1.4, 1.4, 0.15);
+            const winOuterMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
+            const glassPaneGeo = new THREE.BoxGeometry(1.2, 1.2, 0.1);
+            const glassPaneMat = new THREE.MeshStandardMaterial({ color: 0xe0f7fa, transparent: true, opacity: 0.5, roughness: 0.1 });
+
+            // Left Window Build
+            const leftWinOuter = new THREE.Mesh(winOuterGeo, winOuterMat);
+            leftWinOuter.position.set(-2.4, 3, 3.26);
+            houseGroup.add(leftWinOuter);
+            const leftGlass = new THREE.Mesh(glassPaneGeo, glassPaneMat);
+            leftGlass.position.set(-2.4, 3, 3.3);
+            houseGroup.add(leftGlass);
+
+            // Right Window Build
+            const rightWinOuter = leftWinOuter.clone();
+            rightWinOuter.position.x = 2.4;
+            houseGroup.add(rightWinOuter);
+            const rightGlass = leftGlass.clone();
+            rightGlass.position.x = 2.4;
+            houseGroup.add(rightGlass);
+
+            // Stone Path Approach
+            const pathwayGeo = new THREE.PlaneGeometry(2, 6);
+            const pathwayMat = new THREE.MeshStandardMaterial({ color: 0xb0bec5, roughness: 0.9 });
+            const path = new THREE.Mesh(pathwayGeo, pathwayMat);
+            path.rotation.x = -Math.PI / 2;
+            path.position.set(0, 0.02, 6.2);
+            path.receiveShadow = true;
+            scene.add(path);
+
+            scene.add(houseGroup);
+
+            // 👤 GENERATE CORE PLAYER FROM TRACKED ATTRIBUTES
+            buildCoreSystemAvatar();
+
+            camera.lookAt(0, 2.8, 0);
+            animateGameLoop();
         }
 
-        function assembleAdopterBlockEntity(skinHex, shirtHex, pantsHex) {
-            let entityGroup = new THREE.Group();
-            let skinM = new THREE.MeshLambertMaterial({ color: skinHex });
-            let shirtM = new THREE.MeshLambertMaterial({ color: shirtHex });
-            let pantsM = new THREE.MeshLambertMaterial({ color: pantsHex });
+        function buildCoreSystemAvatar() {
+            playerGroup = new THREE.Group();
 
-            let head = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.75, 0.75), skinM); head.position.y = 1.2; head.name = "head"; entityGroup.add(head);
-            let torso = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.4, 0.45), shirtM); torso.position.y = 0.1; torso.name = "torso"; entityGroup.add(torso);
-            
-            let lArm = new THREE.Mesh(new THREE.BoxGeometry(0.38, 1.3, 0.38), skinM); lArm.position.set(-0.68, 0.1, 0); lArm.name = "leftArm"; entityGroup.add(lArm);
-            let rArm = new THREE.Mesh(new THREE.BoxGeometry(0.38, 1.3, 0.38), skinM); rArm.position.set(0.68, 0.1, 0); rArm.name = "rightArm"; entityGroup.add(rArm);
-            let lLeg = new THREE.Mesh(new THREE.BoxGeometry(0.38, 1.3, 0.38), pantsM); lLeg.position.set(-0.24, -1.25, 0); lLeg.name = "leftLeg"; entityGroup.add(lLeg);
-            let rLeg = new THREE.Mesh(new THREE.BoxGeometry(0.38, 1.3, 0.38), pantsM); rLeg.position.set(0.24, -1.25, 0); rLeg.name = "rightLeg"; entityGroup.add(rLeg);
+            // Head (Skin Hex)
+            const headGeo = new THREE.BoxGeometry(1, 1, 1);
+            const headMat = new THREE.MeshStandardMaterial({ color: avatarColors.skin, roughness: 0.7 });
+            headMesh = new THREE.Mesh(headGeo, headMat);
+            headMesh.position.y = 2.9;
+            headMesh.castShadow = true;
+            playerGroup.add(headMesh);
 
-            return entityGroup;
+            // Torso (Shirt Hex)
+            const torsoGeo = new THREE.BoxGeometry(1.5, 1.7, 0.85);
+            const shirtMat = new THREE.MeshStandardMaterial({ color: avatarColors.shirt, roughness: 0.7 });
+            torsoMesh = new THREE.Mesh(torsoGeo, shirtMat);
+            torsoMesh.position.y = 1.55;
+            torsoMesh.castShadow = true;
+            playerGroup.add(torsoMesh);
+
+            // Arms (Skin Hex)
+            const armGeo = new THREE.BoxGeometry(0.6, 1.7, 0.7);
+            leftArm = new THREE.Mesh(armGeo, headMat);
+            leftArm.position.set(-1.1, 1.55, 0);
+            leftArm.castShadow = true;
+            playerGroup.add(leftArm);
+
+            rightArm = new THREE.Mesh(armGeo, headMat);
+            rightArm.position.set(1.1, 1.55, 0);
+            rightArm.castShadow = true;
+            playerGroup.add(rightArm);
+
+            // Legs (Pants Hex)
+            const legGeo = new THREE.BoxGeometry(0.7, 1.5, 0.8);
+            const pantsMat = new THREE.MeshStandardMaterial({ color: avatarColors.pants, roughness: 0.7 });
+            leftLeg = new THREE.Mesh(legGeo, pantsMat);
+            leftLeg.position.set(-0.38, 0.75, 0);
+            leftLeg.castShadow = true;
+            playerGroup.add(leftLeg);
+
+            rightLeg = new THREE.Mesh(legGeo, pantsMat);
+            rightLeg.position.set(0.38, 0.75, 0);
+            rightLeg.castShadow = true;
+            playerGroup.add(rightLeg);
+
+            // Face character straight toward house entry point on the lane edge
+            playerGroup.position.set(0, 0.01, 8);
+            scene.add(playerGroup);
         }
 
-        function loadZoneSceneLayout() {
-            mapStationObjects.forEach(obj => scene.remove(obj));
-            mapStationObjects = [];
-            if(houseDoorPortalBoundary) scene.remove(houseDoorPortalBoundary);
-            if(neighborhoodReturnPortal) scene.remove(neighborhoodReturnPortal);
+        function animateGameLoop() {
+            requestAnimationFrame(animateGameLoop);
 
-            if(currentEnvironmentZone === "house") {
-                document.getElementById('current-zone-tag').textContent = "Your Home Tiny Studio";
-                scene.background = new THREE.Color(0xfff5e6);
+            const timer = Date.now() * 0.001;
 
-                let interiorFloorMesh = new THREE.GridHelper(20, 20, 0xffdca3, 0xfff0d4);
-                interiorFloorMesh.position.y = -1.8;
-                mapStationObjects.push(interiorFloorMesh); scene.add(interiorFloorMesh);
-
-                let bedMesh = new THREE.Mesh(new THREE.BoxGeometry(2, 0.5, 3), new THREE.MeshLambertMaterial({ color: 0x74b9ff }));
-                bedMesh.position.set(-3, -1.5, -3); bedMesh.userData = { targetNeedType: "bed" };
-                mapStationObjects.push(bedMesh); scene.add(bedMesh);
-
-                houseDoorPortalBoundary = new THREE.Mesh(new THREE.BoxGeometry(2.2, 3.5, 0.3), new THREE.MeshLambertMaterial({ color: 0x0984e3, transparent: true, opacity: 0.7 }));
-                houseDoorPortalBoundary.position.set(0, -0.1, -9.5);
-                scene.add(houseDoorPortalBoundary);
-            } 
-            else if (currentEnvironmentZone === "neighborhood") {
-                document.getElementById('current-zone-tag').textContent = "Neighborhood Adoption Center";
-                scene.background = new THREE.Color(0xa5e2ff);
-
-                let streetGridMesh = new THREE.GridHelper(60, 60, 0x2ecc71, 0x78e08f);
-                streetGridMesh.position.y = -1.8;
-                mapStationObjects.push(streetGridMesh); scene.add(streetGridMesh);
-
-                let feedingPlazaStation = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 0.8, 16), new THREE.MeshLambertMaterial({ color: 0xff7675 }));
-                feedingPlazaStation.position.set(4, -1.4, -4); feedingPlazaStation.userData = { targetNeedType: "food" };
-                mapStationObjects.push(feedingPlazaStation); scene.add(feedingPlazaStation);
-
-                let centerFountainDecoration = new THREE.Mesh(new THREE.CylinderGeometry(3, 3, 0.5, 24), new THREE.MeshLambertMaterial({ color: 0xdfe4ea }));
-                centerFountainDecoration.position.set(0, -1.6, 0);
-                mapStationObjects.push(centerFountainDecoration); scene.add(centerFountainDecoration);
-
-                neighborhoodReturnPortal = new THREE.Mesh(new THREE.BoxGeometry(2.5, 4.0, 0.4), new THREE.MeshLambertMaterial({ color: 0xe67e22, transparent: true, opacity: 0.7 }));
-                neighborhoodReturnPortal.position.set(0, 0.2, 18);
-                scene.add(neighborhoodReturnPortal);
-            }
-        }
-
-        function executeGameTickPipeline() {
-            runtimeFrameId = requestAnimationFrame(executeGameTickPipeline);
-            const delta = clock.getDelta();
-            const elapsedTimelineTime = clock.getElapsedTime();
-
-            let transX = 0, transZ = 0;
-            if(activeControlsMatrix.w) transZ -= 1;
-            if(activeControlsMatrix.s) transZ += 1;
-            if(activeControlsMatrix.a) transX -= 1;
-            if(activeControlsMatrix.d) transX += 1;
-
-            if(transX !== 0 || transZ !== 0) {
-                let directionVectorLength = Math.sqrt(transX * transX + transZ * transZ);
-                let stepX = (transX / directionVectorLength) * engineVelocityModifier * delta;
-                let stepZ = (transZ / directionVectorLength) * engineVelocityModifier * delta;
-
-                localUserGroup.position.x += stepX;
-                localUserGroup.position.z += stepZ;
-                localUserGroup.rotation.y = Math.atan2(stepX, stepZ);
-
-                localUserGroup.getObjectByName("leftLeg").rotation.x = Math.sin(elapsedTimelineTime * 14) * 0.5;
-                localUserGroup.getObjectByName("rightLeg").rotation.x = -Math.sin(elapsedTimelineTime * 14) * 0.5;
-                
-                runningActiveEmoteKey = null; // Clear active emote loop if character moves
-            } else {
-                if(!runningActiveEmoteKey) {
-                    localUserGroup.getObjectByName("leftLeg").rotation.set(0,0,0);
-                    localUserGroup.getObjectByName("rightLeg").rotation.set(0,0,0);
-                }
+            if (houseGroup) {
+                houseGroup.rotation.y = Math.sin(timer * 0.1) * 0.04;
             }
 
-            // --- ANIMATION SEQUENCE FROM CORE MODULE ---
-            if (runningActiveEmoteKey) {
-                let lArm = localUserGroup.getObjectByName("leftArm");
-                let rArm = localUserGroup.getObjectByName("rightArm");
-                if (runningActiveEmoteKey === 'macarena') {
-                    lArm.rotation.x = -Math.PI / 2 + Math.sin(elapsedTimelineTime * 8) * 0.2;
-                    rArm.rotation.x = -Math.PI / 2 + Math.cos(elapsedTimelineTime * 8) * 0.2;
-                } else if (runningActiveEmoteKey === 'take-l') {
-                    rArm.rotation.z = Math.PI - 0.4 + Math.sin(elapsedTimelineTime * 10) * 0.3;
-                    localUserGroup.position.y = Math.abs(Math.sin(elapsedTimelineTime * 6)) * 0.5;
-                }
-            } else {
-                localUserGroup.position.y = 0;
-            }
-
-            camera.position.set(localUserGroup.position.x, localUserGroup.position.y + 5, localUserGroup.position.z + 10);
-            camera.lookAt(localUserGroup.position.x, localUserGroup.position.y + 0.5, localUserGroup.position.z);
-
-            if(petStateProfile.ownEgg && activePetGroup) {
-                let targetFollowVector = new THREE.Vector3(
-                    localUserGroup.position.x - Math.sin(localUserGroup.rotation.y) * 1.3,
-                    localUserGroup.position.y - 0.4 + Math.abs(Math.sin(elapsedTimelineTime * 5)) * 0.15,
-                    localUserGroup.position.z - Math.cos(localUserGroup.rotation.y) * 1.3
-                );
-                activePetGroup.position.lerp(targetFollowVector, 0.12);
-            }
-
-            if(currentEnvironmentZone === "house" && houseDoorPortalBoundary) {
-                if(localUserGroup.position.distanceTo(houseDoorPortalBoundary.position) < 1.8) {
-                    currentEnvironmentZone = "neighborhood";
-                    loadZoneSceneLayout();
-                    localUserGroup.position.set(0, 0, 14);
-                }
-            } 
-            else if (currentEnvironmentZone === "neighborhood" && neighborhoodReturnPortal) {
-                if(localUserGroup.position.distanceTo(neighborhoodReturnPortal.position) < 1.8) {
-                    currentEnvironmentZone = "house";
-                    loadZoneSceneLayout();
-                    localUserGroup.position.set(0, 0, -7);
-                }
-            }
-
-            if(petStateProfile.ownEgg && activeTargetNeedNode) {
-                mapStationObjects.forEach(station => {
-                    if(station.userData && station.userData.targetNeedType === activeTargetNeedNode) {
-                        if(localUserGroup.position.distanceTo(station.position) < 2.0) {
-                            fulfillActiveNeedRequirement();
-                        }
-                    }
-                });
+            if (playerGroup && leftArm && rightArm) {
+                // Subtle core idle leg/arm sway motions
+                leftArm.rotation.x = Math.sin(timer * 2.5) * 0.06;
+                rightArm.rotation.x = -Math.sin(timer * 2.5) * 0.06;
+                playerGroup.position.y = Math.abs(Math.sin(timer * 1.8)) * 0.03;
             }
 
             renderer.render(scene, camera);
         }
 
-        function triggerPurchaseEgg() {
-            if(petStateProfile.ownEgg) { alert("You already have an active pet egg asset trailing your entity layer."); return; }
-            if(currentAccountCashBalance < 100) { alert("Insufficient MeowBucks balance metric assets."); return; }
-
-            currentAccountCashBalance -= 100;
-            document.getElementById('cash-counter').textContent = `$${currentAccountCashBalance}`;
-            notifyCoreSystem('ECONOMY_UPDATED', { balance: currentAccountCashBalance });
-
-            petStateProfile.ownEgg = true;
-            petStateProfile.hatched = false;
-            petStateProfile.tasksCompleted = 0;
-
-            activePetGroup = new THREE.Group();
-            let eggShellMesh = new THREE.Mesh(new THREE.SphereGeometry(0.4, 16, 16), new THREE.MeshLambertMaterial({ color: 0xfff275 }));
-            eggShellMesh.scale.set(1, 1.3, 1);
-            activePetGroup.add(eggShellMesh);
-            activePetGroup.position.copy(localUserGroup.position);
-            scene.add(activePetGroup);
-
-            document.getElementById('pet-tracker-title').textContent = "🥚 Starter Egg Module";
-            document.getElementById('pet-tracker-status').textContent = "Needs fulfilled: 0 / 3";
-            document.getElementById('pet-maturity-fill').style.width = "0%";
-            document.getElementById('pet-tracker-hud').classList.remove('hidden');
-
-            setTimeout(generateRandomPetTaskNeed, 3000);
-        }
-
-        function generateRandomPetTaskNeed() {
-            if(!petStateProfile.ownEgg || petStateProfile.hatched) return;
-            if(currentEnvironmentZone === "house") {
-                activeTargetNeedNode = "bed";
-                document.getElementById('need-target-name').textContent = "Bed Station";
-            } else {
-                activeTargetNeedNode = "food";
-                document.getElementById('need-target-name').textContent = "Feeding Plaza Station";
-            }
-            document.getElementById('need-alert-banner').classList.remove('hidden');
-        }
-
-        function fulfillActiveNeedRequirement() {
-            activeTargetNeedNode = null;
-            document.getElementById('need-alert-banner').classList.add('hidden');
-
-            petStateProfile.tasksCompleted++;
-            currentAccountCashBalance += 35; 
-            document.getElementById('cash-counter').textContent = `$${currentAccountCashBalance}`;
-            notifyCoreSystem('ECONOMY_UPDATED', { balance: currentAccountCashBalance });
-
-            let progressRatio = (petStateProfile.tasksCompleted / petStateProfile.requiredTasks) * 100;
-            document.getElementById('pet-maturity-fill').style.width = `${progressRatio}%`;
-            document.getElementById('pet-tracker-status').textContent = `Needs fulfilled: ${petStateProfile.tasksCompleted} / 3`;
-
-            if(petStateProfile.tasksCompleted >= petStateProfile.requiredTasks) {
-                setTimeout(executePetHatchSequence, 1000);
-            } else {
-                setTimeout(generateRandomPetTaskNeed, 6000);
-            }
-        }
-
-        function executePetHatchSequence() {
-            petStateProfile.hatched = true;
-            if(activePetGroup) scene.remove(activePetGroup);
-
-            const entitiesIndexArr = ["Shiba Inu", "Puma", "Snow Cat"];
-            let chosenBreed = entitiesIndexArr[Math.floor(Math.random() * entitiesIndexArr.length)];
-            petStateProfile.type = chosenBreed;
-
-            activePetGroup = new THREE.Group();
-            let bodyCube = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.4, 0.6), new THREE.MeshLambertMaterial({ color: 0xd29d2b }));
-            let headCube = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.35, 0.35), new THREE.MeshLambertMaterial({ color: 0xb37d14 }));
-            headCube.position.set(0, 0.3, 0.25);
-            activePetGroup.add(bodyCube); activePetGroup.add(headCube);
-            activePetGroup.position.copy(localUserGroup.position);
-            scene.add(activePetGroup);
-
-            document.getElementById('pet-tracker-title').textContent = `🐾 Hatched: ${chosenBreed}!`;
-            document.getElementById('pet-tracker-status').textContent = "Pet fully matured.";
-            document.getElementById('trade-btn').classList.remove('hidden');
-            
-            notifyCoreSystem('PET_HATCHED', { breed: chosenBreed });
-        }
-
-        function openTradingSimulatorWindow() {
-            document.getElementById('trade-outgoing-name').textContent = petStateProfile.type;
-            document.getElementById('trade-modal').classList.remove('hidden');
-        }
-
-        function finalizeTradeAgreement(accepted) {
-            document.getElementById('trade-modal').classList.add('hidden');
-            if(accepted) {
-                alert("Trade complete! You received: 🦄 Neon Unicorn!");
-                document.getElementById('pet-tracker-title').textContent = "🦄 Neon Unicorn";
-                activePetGroup.children.forEach(c => c.material.color.setHex(0xff7bf5));
-                document.getElementById('trade-btn').classList.add('hidden');
-                notifyCoreSystem('TRADE_COMPLETED', { received: "Neon Unicorn" });
-            }
-        }
-
-        function hookKeyboardInputEngines() {
-            window.addEventListener('keydown', (e) => {
-                let inputKey = e.key.toLowerCase();
-                if(['w','a','s','d'].includes(inputKey)) activeControlsMatrix[inputKey] = true;
-            });
-            window.addEventListener('keyup', (e) => {
-                let inputKey = e.key.toLowerCase();
-                if(['w','a','s','d'].includes(inputKey)) activeControlsMatrix[inputKey] = false;
-            });
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
+        window.addEventListener('resize', () => {
+            if (camera && renderer) {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
-            });
-        }
+            }
+        });
 
-        function closeTutorialOverlay() { document.getElementById('tutorial-modal').classList.add('hidden'); }
-        
-        function triggerEjectToLauncher() {
-            if(runtimeFrameId) cancelAnimationFrame(runtimeFrameId);
-            notifyCoreSystem('GAME_EXIT_REQUESTED', {});
-        }
+            window.addEventListener('DOMContentLoaded', initGameWorld);
     </script>
 </body>
 </html>
