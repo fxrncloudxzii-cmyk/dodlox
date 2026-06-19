@@ -834,7 +834,7 @@
             <a href="#">Terms of Service</a>
             <a href="#">Safety Guidelines</a>
         </div>
-        <p>© 2026 MeowBlox Corporate Platform System. Powered by Local Storage Core.</p>
+        <p>© 2026 MeowBlox Corporate Platform System.</p>
     </footer>
 
     <script>
@@ -847,8 +847,8 @@
         let activePunishmentsDB = JSON.parse(localStorage.getItem('mb_punishments_db')) || {};
         
         let defaultGamesRegistry = {
-            "adopt": { title: "Adopt Me!", ccu: "4,120", visits: "52.1M", desc: "Raise and dress cute pet modules, design your structural interior apartment box, complete live need sequences, and trade assets with peers!" },
-            "mm2": { title: "Murder Mystery 2", ccu: "840", visits: "12.8M", desc: "Expose the truth or eliminate all targets before your identity is tracked." }
+            "adopt": { title: "Adopt Me!", ccu: "000", visits: "000", desc: "Raise and dress cute pet modules, design your structural interior apartment box, complete live need sequences, and trade assets with peers!" },
+            "mm2": { title: "Murder Mystery 2", ccu: "000", visits: "000", desc: "Expose the truth or eliminate all targets before your identity is tracked." }
         };
         let selectedViewedGameKey = "adopt";
 
@@ -1034,8 +1034,8 @@
                 threeCanvas.classList.add('hidden');
                 liveIframe.classList.remove('hidden');
 
-                // FIXED HTML RAW HEADER BYPASS STREAM PIPELINE VIA JSDELIVR
-                liveIframe.src = "https://cdn.jsdelivr.net/gh/fxrncloudxzii-cmyk/MeowBlox@main/AdoptMe.html";
+            
+                liveIframe.src = "https://raw.githack.com/fxrncloudxzii-cmyk/MeowBlox/main/AdoptMe.html";
                 
                 const chatLog = document.getElementById('client-chat-log');
                 chatLog.innerHTML = `<div class="client-chat-row-msg" style="color:var(--accent-color);">🚀 Loaded Adaptive Server Stream Frame successfully. Enjoy Adopt Me!</div>`;
